@@ -17,3 +17,24 @@ SheetJS是用于多种电子表格格式的解析器和编写器。通过官方�
 [**常见的支持问题**](https://discourse.sheetjs.com)
 
 [**支持的电子数据表的文件格式：**](#file-formats)
+
+<details>
+  <summary><b>支持格式的图表</b> (点击查看)</summary>
+
+![circo graph of format support](formats.png)
+
+![graph legend](legend.png)
+
+</details>
+
+[**浏览器测试**](http://oss.sheetjs.com/js-xlsx/tests/)
+
+[![Build Status](https://saucelabs.com/browser-matrix/sheetjs.svg)](https://saucelabs.com/u/sheetjs)
+
+[![Build Status](https://travis-ci.org/SheetJS/js-xlsx.svg?branch=master)](https://travis-ci.org/SheetJS/js-xlsx)
+[![Build Status](https://semaphoreci.com/api/v1/sheetjs/js-xlsx/branches/master/shields_badge.svg)](https://semaphoreci.com/sheetjs/js-xlsx)
+[![Coverage Status](http://img.shields.io/coveralls/SheetJS/js-xlsx/master.svg)](https://coveralls.io/r/SheetJS/js-xlsx?branch=master)
+[![Dependencies Status](https://david-dm.org/sheetjs/js-xlsx/status.svg)](https://david-dm.org/sheetjs/js-xlsx)
+[![npm Downloads](https://img.shields.io/npm/dt/xlsx.svg)](https://npmjs.org/package/xlsx)
+[![ghit.me](https://ghit.me/badge.svg?repo=sheetjs/js-xlsx)](https://ghit.me/repo/sheetjs/js-xlsx)
+[![Analytics](https://ga-beacon.appspot.com/UA-36810333-1/SheetJS/js-xlsx?pixel)](https://github.com/SheetJS/js-xlsx)
