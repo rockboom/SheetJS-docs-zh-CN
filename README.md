@@ -137,3 +137,77 @@ SheetJS是用于多种电子表格格式的解析器和编写器。通过官方�
 <!-- tocstop -->
 
 </details>
+
+## 安装
+在浏览器里使用，增加一个script标签：
+```html
+<script lang="javascript" src="dist/xlsx.full.min.js"></script>
+```
+
+<details>
+  <summary><b>使用CDN</b> (点击显示详情)</summary>
+
+|    CDN     | URL                                        |
+|-----------:|:-------------------------------------------|
+|    `unpkg` | <https://unpkg.com/xlsx/>                  |
+| `jsDelivr` | <https://jsdelivr.com/package/npm/xlsx>    |
+|    `CDNjs` | <http://cdnjs.com/libraries/xlsx>          |
+|    `packd` | <https://bundle.run/xlsx@latest?name=XLSX> |
+
+`unpkg`提供最新的版本:
+
+```html
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+```
+
+</details>
+
+
+使用 [npm](https://www.npmjs.org/package/xlsx):
+
+```bash
+$ npm install xlsx
+```
+
+使用 [bower](http://bower.io/search/?q=js-xlsx):
+
+```bash
+$ bower install js-xlsx
+```
+
+### JS生态示例
+
+[`示例` 目录](demos/) 包括了一些简单的项目:
+
+**框架和APIS**
+- [`angularjs`](demos/angular/)
+- [`angular 2 / 4 / 5 / 6 and ionic`](demos/angular2/)
+- [`knockout`](demos/knockout/)
+- [`meteor`](demos/meteor/)
+- [`react and react-native`](demos/react/)
+- [`vue 2.x and weex`](demos/vue/)
+- [`XMLHttpRequest and fetch`](demos/xhr/)
+- [`nodejs server`](demos/server/)
+- [`databases and key/value stores`](demos/database/)
+- [`typed arrays and math`](demos/array/)
+
+**打包工具**
+- [`browserify`](demos/browserify/)
+- [`fusebox`](demos/fusebox/)
+- [`parcel`](demos/parcel/)
+- [`requirejs`](demos/requirejs/)
+- [`rollup`](demos/rollup/)
+- [`systemjs`](demos/systemjs/)
+- [`typescript`](demos/typescript/)
+- [`webpack 2.x`](demos/webpack/)
+
+**集成平台**
+- [`electron application`](demos/electron/)
+- [`nw.js application`](demos/nwjs/)
+- [`Chrome / Chromium extensions`](demos/chrome/)
+- [`Adobe ExtendScript`](demos/extendscript/)
+- [`Headless Browsers`](demos/headless/)
+- [`canvas-datagrid`](demos/datagrid/)
+- [`Swift JSC and other engines`](demos/altjs/)
+- [`"serverless" functions`](demos/function/)
+- [`internet explorer`](demos/oldie/)
