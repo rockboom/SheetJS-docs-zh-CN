@@ -249,3 +249,9 @@ node版本自动要求模块提供其他的特性。某些模块的文件相当�
 shim.min.js也包括了在IE6-9中用于加载和保存文件的 `IE_LoadFile` 和 `IE_SaveFile`。对于适用于Photoshop和其它的Adobe产品的格式，`xlsx.extendscript.js`脚本会绑定shim。
 
 
+## 原理
+
+<details>
+    <summary><b>原理</b> (点击显示详情)</summary>
+在SheetJS之前，处理电子表格文件的接口只能用于特定的格式。许多第三方库要么支持一种格式，要么为每一种支持的文件类型提供一个不同的类集。虽然在Excel 2007里面引入了XLSB，但只有Sheet和Excel支持这种格式。
+</details>
