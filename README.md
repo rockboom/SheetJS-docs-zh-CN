@@ -211,3 +211,25 @@ $ bower install js-xlsx
 - [`Swift JSC and other engines`](demos/altjs/)
 - [`"serverless" functions`](demos/function/)
 - [`internet explorer`](demos/oldie/)
+
+### 可选模块
+
+<details>
+    <summary><b>可选特点</b> (点击显示详情)</summary>
+node版本自动要求模块提供其他的特性。某些模块的文件相当大而且仅在一些特殊的场景下才会用到，因此不应该把他们当做核心部分一起加载。在浏览器中用到这些模块时，可以用下面的方式进行加载：
+
+```html
+<!-- international support from js-codepage -->
+<script src="dist/cpexcel.js"></script>
+```
+每一个依赖合适的版本可以放在 dist/directory 目录下。
+完整的单文件版本在 `dist/xlsx.full.min.js` 文件里面。
+默认情况下，Webpack和Browserify构建包含可选的模块。可以通过配置Webpack移除对 `resolve.alias` 的支持：
+
+```js
+  /* uncomment the lines below to remove support */
+  resolve: {
+    alias: { "./dist/cpexcel.js": "" } // <-- omit international support
+  }
+```
+</details>
