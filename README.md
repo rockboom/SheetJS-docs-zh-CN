@@ -233,3 +233,19 @@ node版本自动要求模块提供其他的特性。某些模块的文件相当�
   }
 ```
 </details>
+
+### ECMAScript 5 的兼容性
+
+自从库使用了像 `Array#forEach` 这样的函数，老版本的浏览器需要[shim 提供缺少的函数](http://oss.sheetjs.com/js-xlsx/shim.js)。
+
+要在加载 `xlsx.js` 的script标签之前添加shim，才能使用它。
+
+```html
+<!-- add the shim first -->
+<script type="text/javascript" src="shim.min.js"></script>
+<!-- after the shim is referenced, add the library -->
+<script type="text/javascript" src="xlsx.full.min.js"></script>
+```
+shim.min.js也包括了在IE6-9中用于加载和保存文件的 `IE_LoadFile` 和 `IE_SaveFile`。对于适用于Photoshop和其它的Adobe产品的格式，`xlsx.extendscript.js`脚本会绑定shim。
+
+
