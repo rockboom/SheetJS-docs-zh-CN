@@ -255,5 +255,5 @@ shim.min.js也包括了在IE6-9中用于加载和保存文件的 `IE_LoadFile` �
     <summary><b>原理</b> (点击显示详情)</summary>
 在SheetJS之前，处理电子表格文件的接口只能用于特定的格式。许多第三方库要么支持一种格式，要么为每一种支持的文件类型提供一个不同的类集。虽然在Excel 2007里面引入了XLSB，但只有Sheet和Excel支持这种格式。
 
-为了提高不可知格式的显示，js-xlsx使用了被称作["Common Spreadsheet Format"]的纯JS的显示方法(#common-spreadsheet-format)。强调一种统一的显示方式，能够有一些特点，比如格式转换和嵌套`class tap`。
+为了提高不可知格式的显示，js-xlsx使用了被称作["Common Spreadsheet Format"]的纯JS的显示方法(#common-spreadsheet-format)。强调一种统一的显示方式，能够有一些特点，比如格式转换和嵌套`class tap`。通过提取出各种格式的复杂性，工具没有必要担心特定的文件类型。
 </details>
