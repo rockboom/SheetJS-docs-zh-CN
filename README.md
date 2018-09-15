@@ -258,4 +258,6 @@ shim.min.js也包括了在IE6-9中用于加载和保存文件的 `IE_LoadFile` �
 为了提高不可知格式的显示，js-xlsx使用了被称作["Common Spreadsheet Format"]的纯JS的显示方法(#common-spreadsheet-format)。强调一种统一的显示方式，能够有一些特点，比如格式转换和嵌套`class tap`。通过提取出各种格式的复杂性，工具没有必要担心特定的文件类型。
 
 一个简单的的对象显示和细心的代码练习相结合，能让示例运行在较老的浏览器以及像`ExtendScript`和`Web Workers`这样可选择的环境里执行。虽然很想使用最新的和最好的特性，不过这些特性需要最新的浏览器，用以限制兼容性。
+
+工具函数捕获通用的使用例子，比如生成JS对象或HTML。
 </details>
