@@ -400,3 +400,60 @@ input_dom_element.addEventListener('change', handleFile, false);
 </details>
 
 包括移动App文件处理等更多的使用例子可以在[included demos](demos/)中查看。
+
+## 流式读取文件
+
+<details>
+  <summary><b>为什么没有流式读取API？</b> (点击显示详情)</summary>
+
+最常用的和最令人感兴趣的格式(XLS, XLSX/M, XLSB, ODS)最终都是ZIP或CFB文件容器。两种格式都不会放目录结构在文件开头：ZIP文件把主要的目录记录放在逻辑文件的结尾，然而CFB文件可以把存储信息放在文件的任何地方。所以，为了正确地处理这些格式，流式函数必须在开始之前缓存整个文件。这样证明了流式的期待的错误，因此我们不提供任何流式阅读API。
+
+</details>
+
+当处理可读流时，最简单的方式是缓存流，并且最后再去处理整个文件。这可以通过临时文件或者是显式连接流来实现。
+
+<details>
+  <summary><b>显式连接流</b> (点击显示详情)</summary>
+
+```js
+var fs = require('fs');
+var XLSX = require('xlsx');
+function process_RS(stream/*:ReadStream*/, cb/*:(wb:Workbook)=>void*/)/*:void*/{
+  var buffers = [];
+  stream.on('data', function(data) { buffers.push(data); });
+  stream.on('end', function() {
+    var buffer = Buffer.concat(buffers);
+    var workbook = XLSX.read(buffer, {type:"buffer"});
+
+    /* DO SOMETHING WITH workbook IN THE CALLBACK */
+    cb(workbook);
+  });
+}
+```
+
+使用像`concat-stream`这样的模块会有更多有效的解决办法可以使用。
+</details>
+
+<details>
+  <summary><b>首先写入文件系统</b> (点击显示详情)</summary>
+
+这个例子使用[`tempfile`](https://npm.im/tempfile)生成文件名。
+
+```js
+var fs = require('fs'), tempfile = require('tempfile');
+var XLSX = require('xlsx');
+function process_RS(stream/*:ReadStream*/, cb/*:(wb:Workbook)=>void*/)/*:void*/{
+  var fname = tempfile('.sheetjs');
+  console.log(fname);
+  var ostream = fs.createWriteStream(fname);
+  stream.pipe(ostream);
+  ostream.on('finish', function() {
+    var workbook = XLSX.readFile(fname);
+    fs.unlinkSync(fname);
+
+    /* DO SOMETHING WITH workbook IN THE CALLBACK */
+    cb(workbook);
+  });
+}
+```
+</details>
