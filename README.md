@@ -263,3 +263,140 @@ shim.min.js也包括了在IE6-9中用于加载和保存文件的 `IE_LoadFile` �
 
 在Excel 2007种，Excel添加XSLX格式作为默认的起始端。然而，有一些其他格式会更多的出现上述的属性。例如，XLSB格式XLSX格式相似，不过文件会使用一半的空间，而且也会更开的打开文件。虽然XLSX编写器可以使用，但是其他格式的编写器也可以使用，因此使用者能够充分利用每一种格式独特的特点。社区版本的主要关注点在正确的数据转换，即从任意一个兼容的数据表示中提取数据，导出适用于任意第三方接口的各种数据格式。
 </details>
+
+## 解析工作簿
+
+对于解析，第一步是读取文件。这一步包括获取数据并且导入数据库。这里有一些常用的例子。
+<details>
+    <summary><b>nodejs读取文件</b> (点击显示详情)</summary>
+`readFile` 只能在服务器环境中使用。浏览器没有用于读取任意指定路径文件的API，因此必须使用另外的策略。
+```js
+if(typeof require !== 'undefined') XLSX = require('xlsx');
+var workbook = XLSX.readFile('test.xlsx');
+/* DO SOMETHING WITH workbook HERE */
+```
+</details>
+
+<details>
+  <summary><b>Photoshop ExtendScript读取文件</b> (点击显示详情)</summary>
+
+`readFile` 用Photoshop和其他的ExtendScript目标把逻辑`File`包起来。需要指定文件的绝对路径
+
+```js
+#include "xlsx.extendscript.js"
+/* Read test.xlsx from the Documents folder */
+var workbook = XLSX.readFile(Folder.myDocuments + '/' + 'test.xlsx');
+/* DO SOMETHING WITH workbook HERE */
+```
+
+[`extendscript`](demos/extendscript/) 包含了一个更复杂的例子。
+
+</details>
+
+<details>
+  <summary><b>浏览器从页面读取TABLE元素</b> (点击显示详情)</summary>
+`table_to_book` 和 `table_to_sheet`工具函数获取DOM的TABLE元素，并且通过子节点进行迭代。
+
+```js
+var workbook = XLSX.utils.table_to_book(document.getElementById('tableau'));
+/* DO SOMETHING WITH workbook HERE */
+```
+
+一个网页里面的多张表可以被转换成单个的工作表。
+
+```js
+/* create new workbook */
+var workbook = XLSX.utils.book_new();
+
+/* convert table 'table1' to worksheet named "Sheet1" */
+var ws1 = XLSX.utils.table_to_sheet(document.getElementById('table1'));
+XLSX.utils.book_append_sheet(workbook, ws1, "Sheet1");
+
+/* convert table 'table2' to worksheet named "Sheet2" */
+var ws2 = XLSX.utils.table_to_sheet(document.getElementById('table2'));
+XLSX.utils.book_append_sheet(workbook, ws2, "Sheet2");
+
+/* workbook now has 2 worksheets */
+```
+
+另一种选择，HTML代码也可以被提取和解析。
+
+```js
+var htmlstr = document.getElementById('tableau').outerHTML;
+var workbook = XLSX.read(htmlstr, {type:'string'});
+```
+</details>
+
+<details>
+  <summary><b>浏览器下载文件(ajax)</b> (点击显示详情)</summary>
+注意：对于运行在老版浏览器里更完整的例子，请查看示例 <http://oss.sheetjs.com/js-xlsx/ajax.html>。[`xhr`示例](demos/xhr/)包含`XMLHttpRequest` 和 `fetch`更多的例子。
+
+```js
+var url = "http://oss.sheetjs.com/test_files/formula_stress_test.xlsx";
+
+/* set up async GET request */
+var req = new XMLHttpRequest();
+req.open("GET", url, true);
+req.responseType = "arraybuffer";
+
+req.onload = function(e) {
+  var data = new Uint8Array(req.response);
+  var workbook = XLSX.read(data, {type:"array"});
+
+  /* DO SOMETHING WITH workbook HERE */
+}
+
+req.send();
+```
+
+</details>
+
+<details>
+  <summary><b>浏览器拖拽</b> (点击显示详情)</summary>
+拖拽使用了HTML5 的 `FileReader` API，加载数据时使用`readAsBinaryString` 或 `readAsArrayBuffer`。但并不是所有的浏览器都支持全部的 `FileReader` API，因此非常推荐动态的特性检测。
+
+```js
+var rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
+function handleDrop(e) {
+  e.stopPropagation(); e.preventDefault();
+  var files = e.dataTransfer.files, f = files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var data = e.target.result;
+    if(!rABS) data = new Uint8Array(data);
+    var workbook = XLSX.read(data, {type: rABS ? 'binary' : 'array'});
+
+    /* DO SOMETHING WITH workbook HERE */
+  };
+  if(rABS) reader.readAsBinaryString(f); else reader.readAsArrayBuffer(f);
+}
+drop_dom_element.addEventListener('drop', handleDrop, false);
+```
+</details>
+
+<details>
+  <summary><b>浏览器通过form元素上传文件</b> (点击显示详情)</summary>
+
+来自`file input`元素的数据能够被和拖拽例子中相同的`FileReader`API处理。
+
+```js
+var rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
+function handleFile(e) {
+  var files = e.target.files, f = files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var data = e.target.result;
+    if(!rABS) data = new Uint8Array(data);
+    var workbook = XLSX.read(data, {type: rABS ? 'binary' : 'array'});
+
+    /* DO SOMETHING WITH workbook HERE */
+  };
+  if(rABS) reader.readAsBinaryString(f); else reader.readAsArrayBuffer(f);
+}
+input_dom_element.addEventListener('change', handleFile, false);
+```
+[`oldie`示例](demos/oldie/)展示了一个IE兼容性的回退方案。
+
+</details>
+
+包括移动App文件处理等更多的使用例子可以在[included demos](demos/)中查看。
