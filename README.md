@@ -457,3 +457,61 @@ function process_RS(stream/*:ReadStream*/, cb/*:(wb:Workbook)=>void*/)/*:void*/{
 }
 ```
 </details>
+
+## 使用工作簿
+
+完整的对象格式会在本文件的后面部分进行介绍。
+
+<details>
+  <summary><b>读取指定的单元格</b> (点击显示详情)</summary>
+
+这个例子提取first工作表中A1单元格的存储值：
+
+```js
+var first_sheet_name = workbook.SheetNames[0];
+var address_of_cell = 'A1';
+
+/* Get worksheet */
+var worksheet = workbook.Sheets[first_sheet_name];
+
+/* Find desired cell */
+var desired_cell = worksheet[address_of_cell];
+
+/* Get the value */
+var desired_value = (desired_cell ? desired_cell.v : undefined);
+```
+</details>
+
+<details>
+  <summary><b>在工作簿中增加新的工作表</b> (点击显示详情)</summary>
+
+例子中使用[`XLSX.utils.aoa_to_sheet`](#array-of-arrays-input)生成工作表，使用`XLSX.utils.book_append_sheet`把表添加到工作簿中。
+
+```js
+var new_ws_name = "SheetJS";
+
+/* make worksheet */
+var ws_data = [
+  [ "S", "h", "e", "e", "t", "J", "S" ],
+  [  1 ,  2 ,  3 ,  4 ,  5 ]
+];
+var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+/* Add the worksheet to the workbook */
+XLSX.utils.book_append_sheet(wb, ws, ws_name);
+```
+</details>
+
+<details>
+  <summary><b>从头开始创建工作簿</b> (点击显示详情)</summary>
+
+工作簿对象包含一个`SheetNames`名称数组和一个`Sheets`对象，用来将表名映射到表对象。`XLSX.utils.book_new`工具函数创建一个新的工作簿对象：
+
+```js
+/* create a new blank workbook */
+var wb = XLSX.utils.book_new();
+```
+
+新的工作簿是空白的而且不包含工作表。如果工作簿，那么写入函数将会出错。
+</details>
+
