@@ -650,3 +650,45 @@ Downloadify.create(id,{
 </details>
 
 [included demos](demos/)包含了移动app和其他专门的部署。
+
+### 写入示例
+
+- <http://sheetjs.com/demos/table.html> 导出一个 HTML table
+- <http://sheetjs.com/demos/writexlsx.html> 生成一个简单文件
+
+### 流式写入
+
+`XLSX.stream`对象中可以使用流式写入函数。流式函数像普通的函数一样传入相同的参数，不过返回一个可读流。但是他们只暴露在Nodejs中。
+
+- `XLSX.stream.to_csv` 是 `XLSX.utils.sheet_to_csv`的流式版本。
+- `XLSX.stream.to_html` 是 `XLSX.utils.sheet_to_html`的流式版本。
+- `XLSX.stream.to_json` 是 `XLSX.utils.sheet_to_json`的流式版本。
+
+<details>
+  <summary><b>nodejs转换成CSV并写入文件</b> (点击显示详情)</summary>
+
+```js
+var output_file_name = "out.csv";
+var stream = XLSX.stream.to_csv(worksheet);
+stream.pipe(fs.createWriteStream(output_file_name));
+```
+
+</details>
+
+<details>
+  <summary><b>nodejs将JSON流输出到屏幕</b> (点击显示详情)</summary>
+
+```js
+/* to_json returns an object-mode stream */
+var stream = XLSX.stream.to_json(worksheet, {raw:true});
+
+/* the following stream converts JS objects to text via JSON.stringify */
+var conv = new Transform({writableObjectMode:true});
+conv._transform = function(obj, e, cb){ cb(null, JSON.stringify(obj) + "\n"); };
+
+stream.pipe(conv); conv.pipe(process.stdout);
+```
+
+</details>
+
+<https://github.com/sheetjs/sheetaki> pips将可写流写入nodejs响应。
