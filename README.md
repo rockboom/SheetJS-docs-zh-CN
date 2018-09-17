@@ -530,3 +530,123 @@ node安装一个能够读取电子数据表和输出各种格式的命令行工�
 - `XLSX.utils.sheet_to_html` 生成HTML
 - `XLSX.utils.sheet_to_json` 生成一个对象数组
 - `XLSX.utils.sheet_to_formulae` 生成一张公示列表
+
+## 编写工作簿
+
+对编写而言，第一步是生成导出数据。辅助函数`write` 和 `writeFile`将会生成各种适合分发的数据格式。第二步是和端点实际的共享数据。假设`workbook`是一个工作簿对象。
+
+<details>
+  <summary><b>nodejs写入文件</b> (点击显示详情)</summary>
+
+`XLSX.writeFile` uses `fs.writeFileSync` in server environments:
+
+```js
+if(typeof require !== 'undefined') XLSX = require('xlsx');
+/* output format determined by filename */
+XLSX.writeFile(workbook, 'out.xlsb');
+/* at this point, out.xlsb is a file that you can distribute */
+```
+</details>
+
+<details>
+  <summary><b>Photoshop ExtendScript 写入文件</b> (点击显示详情)</summary>
+
+`writeFile` 把 `File`包裹在 Photoshop 和 other ExtendScript 目标里面。指定的路径应该是绝对路径。
+
+```js
+#include "xlsx.extendscript.js"
+/* output format determined by filename */
+XLSX.writeFile(workbook, 'out.xlsx');
+/* at this point, out.xlsx is a file that you can distribute */
+```
+
+[`extendscript` 示例](demos/extendscript/)包含有更复杂的例子。
+
+</details>
+
+<details>
+  <summary><b>浏览器将TABLE元素添加到页面</b> (点击显示详情)</summary>
+
+`sheet_to_html`工具函数生成能被添加到任意DOM元素的HTML代码。
+
+```js
+var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+var container = document.getElementById('tableau');
+container.innerHTML = XLSX.utils.sheet_to_html(worksheet);
+```
+</details>
+
+<details>
+  <summary><b>浏览器上传文件(ajax)</b> (点击显示详情)</summary>
+
+用 `XHR` 的完整的复杂示例可以在 [`XHR`示例](demos/xhr/) 中查看，获取和包装器库的例子也可以包含在里面。例子中假设服务器能处理Base64编码的文件(查看基本的莫得服务器示例)。
+
+```js
+/* in this example, send a base64 string to the server */
+var wopts = { bookType:'xlsx', bookSST:false, type:'base64' };
+
+var wbout = XLSX.write(workbook,wopts);
+
+var req = new XMLHttpRequest();
+req.open("POST", "/upload", true);
+var formdata = new FormData();
+formdata.append('file', 'test.xlsx'); // <-- server expects `file` to hold name
+formdata.append('data', wbout); // <-- `data` holds the base64-encoded data
+req.send(formdata);
+```
+</details>
+
+<details>
+  <summary><b>浏览器保存文件</b> (点击显示详情)</summary>
+
+`XLSX.writeFile` 包含了一些用于触发文件保存的方法。
+
+- `URL`浏览器API为文件创建一个URL对象，通过创建a标签并给他添加click事件就可以使用URL对象。现代浏览器都支持这个方法。
+- `msSaveBlob`是IE10及IE10以上用来触发文件保存的API。
+- 对于Windows XP 和 Windows 7里面的IE6和IE6以上的以上浏览器，`IE_FileSave` 使用 VBScript 和 ActiveX 来写入文件。s补充程序（shim)必须包含在包含的HTML页面中。
+  
+并没有标准的方法判断是否真实的文件已经被下载了。
+
+```js
+/* output format determined by filename */
+XLSX.writeFile(workbook, 'out.xlsb');
+/* at this point, out.xlsb will have been downloaded */
+```
+
+</details>
+
+<details>
+  <summary><b>浏览器保存文件(兼容性)</b> (点击显示详情)</summary>
+
+`XLSX.writeFile`方法在大多数的现代浏览器以及老版本的浏览器中都能使用。对于更老的浏览器，wrapper库里面有变通的方法可以应用。
+
+[`FileSaver.js`](https://github.com/eligrey/FileSaver.js/) 执行 `saveAs`方法。
+
+注意：如果`saveAs`方法可以使用，`XLSX.writeFile`会自动调用。
+
+```js
+/* bookType can be any supported output type */
+var wopts = { bookType:'xlsx', bookSST:false, type:'array' };
+
+var wbout = XLSX.write(workbook,wopts);
+
+/* the saveAs call downloads a file on the local machine */
+saveAs(new Blob([wbout],{type:"application/octet-stream"}), "test.xlsx");
+```
+
+[`Downloadify`](https://github.com/dcneiner/downloadify)使用Flash SWF按钮生成本地文件，即使是ActiveX不能使用的环境也适用。
+
+```js
+Downloadify.create(id,{
+	/* other options are required! read the downloadify docs for more info */
+	filename: "test.xlsx",
+	data: function() { return XLSX.write(wb, {bookType:"xlsx", type:'base64'}); },
+	append: false,
+	dataType: 'base64'
+});
+```
+
+[`oldie`示例](demos/oldie/)展示了IE向后兼容的场景。
+</details>
+
+[included demos](demos/)包含了移动app和其他专门的部署。
