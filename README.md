@@ -692,3 +692,51 @@ stream.pipe(conv); conv.pipe(process.stdout);
 </details>
 
 <https://github.com/sheetjs/sheetaki> pips将可写流写入nodejs响应。
+
+## 接口
+
+`XLSX`是浏览器暴露出来可以使用的方法，导出到node中能够使用的`XLSX.version`是`XLSX`库的版本(通过构建脚本添加)。`XLSX.SSF`是[格式化库](http://版本git.io/ssf)的嵌入版本。
+
+### 解析函数
+
+`XLSX.read(data, read_opts)` 用来解析数据  `data`。
+`XLSX.readFile(filename, read_opts)` 用来读取文件名 `filename` 并且解析。解析选项会在[解析选项](#parsing-options)部分阐述。
+
+### 写入函数
+
+`XLSX.write(wb, write_opts)` 用来写入工作簿 `wb`。
+`XLSX.writeFile(wb, filename, write_opts)` 把 `wb` 写入到特定的文件 `filename` 中。如果是基于浏览器的环境，此函数会强制浏览器端下载。
+`XLSX.writeFileAsync(filename, wb, o, cb)` 把 `wb` 写入到特定的文件 `filename` 中。如果 `o` 被省略，写入函数会使用第三个参数作为回调函数。
+
+`XLSX.stream` 包含一组流式写入函数的集合。
+
+写入选项会在[写入选项部分](#writing-options)部分进行阐述。
+
+### 工具
+
+`XLSX.utils`对象中的工具函数都可以使用，工具函数在[工具函数](#utility-functions)部分进行阐述。
+
+**导入:**
+
+- `aoa_to_sheet` 把转换JS数据数组的数组为工作表。
+- `json_to_sheet` 把JS对象数组转换为工作表。
+- `table_to_sheet` 把DOM TABLE元素转换为工作表。
+- `sheet_add_aoa` 把JS数据数组的数组添加到已存在的工作表中。
+- `sheet_add_json` 把JS对象数组添加到已存在的工作表中。
+
+**导出:**
+
+- `sheet_to_json` 把工作表转换为JS对象数组。
+- `sheet_to_csv` 生成分隔符隔开值的输出。
+- `sheet_to_txt` 生成UTF16格式化的文本。
+- `sheet_to_html` 生成HTML输出。
+- `sheet_to_formulae` 生成公式列表(带有值回退)。
+
+**单元格和单元格地址的操作:**
+
+- `format_cell` 生成文本类型的单元格值(使用数字格式)。
+- `encode_row / decode_row` 在0索引行和1索引行之间转换。
+- `encode_col / decode_col` 在0索引列和列名之间转换。
+- `encode_cell / decode_cell` 转换单元格地址。
+- `encode_range / decode_range` 转换单元格的范围。
+
