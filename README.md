@@ -515,3 +515,18 @@ var wb = XLSX.utils.book_new();
 新的工作簿是空白的而且不包含工作表。如果工作簿，那么写入函数将会出错。
 </details>
 
+### 解析和编写示例
+
+- <http://sheetjs.com/demos/modify.html> read + modify + write files
+
+- <https://github.com/SheetJS/js-xlsx/blob/master/bin/xlsx.njs> node
+
+node安装一个能够读取电子数据表和输出各种格式的命令行工具 `xlsx`。源码可以在 `bin` 目录下的`xlsx.njs`里面找到。
+
+`XLSX.utils`中的一些辅助函数会生成不同的工作表视图。
+
+- `XLSX.utils.sheet_to_csv` 生成CSV文件
+- `XLSX.utils.sheet_to_txt` 生成UTF16的格式化文本
+- `XLSX.utils.sheet_to_html` 生成HTML
+- `XLSX.utils.sheet_to_json` 生成一个对象数组
+- `XLSX.utils.sheet_to_formulae` 生成一张公示列表
