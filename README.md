@@ -740,3 +740,9 @@ stream.pipe(conv); conv.pipe(process.stdout);
 - `encode_cell / decode_cell` 转换单元格地址。
 - `encode_range / decode_range` 转换单元格的范围。
 
+## 常用的数据表格式(Common Spreadsheet Format)
+
+js-xlsx符合常用的数据表格式(CSF)。
+
+### 一般结构
+
