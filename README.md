@@ -848,3 +848,41 @@ Excel支持两种时期(January 1 1900和January 1 1904)，查看["1900 vs. 1904
 !!(((wb.Workbook||{}).WBProps||{}).date1904)
 ```
 </details>
+
+### 数据表对象
+
+每一个不以`!`开始的key都会映射到一个单元格(用`A-1`符合)。`sheet[address]` 返回指定地址的单元格对象。
+
+**指定的数据表属性(通过 `sheet[key]`访问, 每一个都以 `!`开始):**
+
+- `sheet['!ref']`：A-1的范围是基于表示数据表的范围。操作数据表的函数应该使用这个参数来决定操作范围。此范围之外指定的单元格不会被处理。尤其是手动编写数据表时，范围之外的单元格不会被包含在其中。
+
+处理数据表的函数应该对`!ref`的存在进行检测。如果`!ref`被忽略或者不是有效的范围，函数就可以吧数据表看做是空表或者尝试猜范围。词库附带的工具函数会将工作表视为空(例如CSV的输出是空字符串)。
+
+当用`sheetRows`属性集读取工作表时，ref参数会使用限制的范围。最初的范围通过`ws['!fullref']`设置。
+
+- `sheet['!margins']`：`sheet['!margins']`对象表示页面的边距。默认值遵循Excel的常规设置。Excel也有"wide"和"narrow"的设置，不过他们都被存储为原生的尺寸。主要的属性已在下表列出：
+
+<details>
+  <summary><b>页面边距详情</b> (点击显示详情)</summary>
+
+| key      | description            | "normal" | "wide" | "narrow" |
+|----------|------------------------|:---------|:-------|:-------- |
+| `left`   | left margin (inches)   | `0.7`    | `1.0`  | `0.25`   |
+| `right`  | right margin (inches)  | `0.7`    | `1.0`  | `0.25`   |
+| `top`    | top margin (inches)    | `0.75`   | `1.0`  | `0.75`   |
+| `bottom` | bottom margin (inches) | `0.75`   | `1.0`  | `0.75`   |
+| `header` | header margin (inches) | `0.3`    | `0.5`  | `0.3`    |
+| `footer` | footer margin (inches) | `0.3`    | `0.5`  | `0.3`    |
+
+```js
+/* Set worksheet sheet to "normal" */
+ws["!margins"]={left:0.7, right:0.7, top:0.75,bottom:0.75,header:0.3,footer:0.3}
+/* Set worksheet sheet to "wide" */
+ws["!margins"]={left:1.0, right:1.0, top:1.0, bottom:1.0, header:0.5,footer:0.5}
+/* Set worksheet sheet to "narrow" */
+ws["!margins"]={left:0.25,right:0.25,top:0.75,bottom:0.75,header:0.3,footer:0.3}
+```
+</details>
+
+#### 工作表对象
