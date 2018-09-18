@@ -782,4 +782,33 @@ for(var R = range.s.r; R <= range.e.r; ++R) {
 
 真实的数组公式存储在数组范围中第一个单元个的`f`字段内。此范围内的其他单元格会省略`f`字段。
 
+### 数据类型
 
+原始值被存储在`v`值属性中，用来解释基于`t`类型的属性。这样的区别允许用于数字和数字类型文本的展示。下面有6种有效的单元格类型。
+
+| Type | Description |
+| :--: | :---------- |
+| `b`  | Boolean: 值可以理解为JS `boolean`                            |
+| `e`  | Error: 值是数字类型的编码，而且`w`属性存储共同的名称 ** |
+| `n`  | Number: 值是JS `number` ** |
+| `d`  | Date: 值是 JS `Date` 对象或者是被解析为Date的字符串 **|
+| `s`  | Text: 值可以理解为 JS `string` 并且被写成文本 **|
+| `z`  | Stub: 被数据处理工具函数忽略的空白子单元格 ** |
+
+<details>
+  <summary><b>Error 值以及含义</b> (点击显示详情)</summary>
+
+|  Value | Error 含义   |
+| -----: | :-------------- |
+| `0x00` | `#NULL!`        |
+| `0x07` | `#DIV/0!`       |
+| `0x0F` | `#VALUE!`       |
+| `0x17` | `#REF!`         |
+| `0x1D` | `#NAME?`        |
+| `0x24` | `#NUM!`         |
+| `0x2A` | `#N/A`          |
+| `0x2B` | `#GETTING_DATA` |
+
+</details>
+
+`n`表示Number类型。`n`包括了所有被Excel存储为数字的数据表，比如dates/times和Boolean字段。
