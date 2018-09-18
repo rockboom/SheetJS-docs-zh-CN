@@ -811,4 +811,8 @@ for(var R = range.s.r; R <= range.e.r; ++R) {
 
 </details>
 
-`n`表示Number类型。`n`包括了所有被Excel存储为数字的数据表，比如dates/times和Boolean字段。
+`n`表示Number类型。`n`包括了所有被Excel存储为数字的数据表，比如dates/times和Boolean字段。Excel专门使用能够被IEEE754浮点数表示的数据，比如JS Number，所以字段 `v` 保存原始数字。`w`字段保持格式化文本。Dates 默认存储为数字，使用`XLSX.SSF.parse_date_code`进行转换。
+
+类型 `d`表示日期类型，只有当选项为`cellDates`才会生成日期类型。因为JSON没有普通的日期类型，所以希望解析器存储的日期字符串像从`date.toISOString()`中获取的一样。另一方面，写入函数和导出函数也可以处理日期字符串和JS日期对象。需要注意Excel会忽略时区修饰符，并且处理所有本地时区的日期。代码库没有改正这个错误。
+
+类型`z`表示空白的存根单元格。生成存根单元格是为了以防万一单元格没有被赋予指定值，但是保留了注释或者是其他的元数据。存根单元格会被核心库的数据处理工具函数忽略。默认情况下不会生成存根单元格，只有当解析器`sheetStubs`的选项被设为`true`时才会生成。
