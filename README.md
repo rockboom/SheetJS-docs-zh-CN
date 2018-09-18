@@ -816,3 +816,35 @@ for(var R = range.s.r; R <= range.e.r; ++R) {
 类型 `d`表示日期类型，只有当选项为`cellDates`才会生成日期类型。因为JSON没有普通的日期类型，所以希望解析器存储的日期字符串像从`date.toISOString()`中获取的一样。另一方面，写入函数和导出函数也可以处理日期字符串和JS日期对象。需要注意Excel会忽略时区修饰符，并且处理所有本地时区的日期。代码库没有改正这个错误。
 
 类型`z`表示空白的存根单元格。生成存根单元格是为了以防万一单元格没有被赋予指定值，但是保留了注释或者是其他的元数据。存根单元格会被核心库的数据处理工具函数忽略。默认情况下不会生成存根单元格，只有当解析器`sheetStubs`的选项被设为`true`时才会生成。
+
+
+#### 日期
+
+<details>
+  <summary><b>Excel 日期编码的细节</b> (点击显示详情)</summary>
+
+默认情况下，Excel把日期存储为数字，并用指定的日期处理格式编码进行处理。例如，日期`19-Feb-17`被存储为数字`42785`，数字格式为`d-mmm-yy`。`SSF`模块了解数字格式并进行适当的转换。
+
+XSLX也支持特定的日期类型`d`，它的数据是ISO 8601日期字符串。格式化工具把日期还原为数字。
+
+所有解析器的默认行为是生成数字单元格。设置`cellDates`为true会强制生成器存储日期。
+
+</details>
+
+<details>
+  <summary><b>时区和日期</b> (点击显示详情)</summary>
+
+Excel没有原生的通用时间的概念。所有的时间都会在本地时区指定。Excel限制指定真正的绝对日期。
+
+对于下面的Excel，代码库将所有的日期视为相对于当地时区的日期。
+</details>
+
+<details>
+  <summary><b>时期：1900年和1904年</b> (点击显示详情)</summary>
+
+Excel支持两种时期(January 1 1900和January 1 1904)，查看["1900 vs. 1904 Date System" article](http://support2.microsoft.com/kb/180162)。工作簿的时期可以通过测试工作簿的`wb.Workbook.WBProps.date1904`属性来决定：
+
+```js
+!!(((wb.Workbook||{}).WBProps||{}).date1904)
+```
+</details>
