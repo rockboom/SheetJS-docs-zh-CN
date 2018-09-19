@@ -886,3 +886,59 @@ ws["!margins"]={left:0.25,right:0.25,top:0.75,bottom:0.75,header:0.3,footer:0.3}
 </details>
 
 #### 工作表对象
+
+除了基本的数据表关键字之外，工作表还增加了下面的内容：
+
+- `ws['!cols']`：返回列属性对象的数组。实际上的列宽使用统一的方式存储在文件里，宽度的测量依据最大数字宽度(在像素中，最大的渲染宽度是数字0-9)。渲染时，列对象用`wpx`字段存储像素宽度，用`wch`存储字符宽度，用`MDW`字段存储最大数字宽度。
+
+- `ws['!rows']`: 返回行属性对象的数组，后面的文档会进行阐述。每一个行对象编码属性包括行高和能见度。
+
+- `ws['!merges']`: 返回与工作表中合并单元格相对应的范围对象的数组。纯文本格式不支持合并单元格。如果合并的单元格存在，CSV导出将会把所有的单元格写入合并范围，因此确保在合并的范围内只有第一个单元格(左上角的单元格)被设置。
+
+- `ws['!protect']`: 写入数据表保护属性的对象。`password`键为支持密码保护的数据表(XLSX/XLSB/XLS)指定密码。写入函数会使用XOR模糊方式。下面`key`控制数据表保护--数据表被锁定时设置key为false可以使用feature，或者设为true禁用feature。
+
+<details>
+  <summary><b>工作表保护详情</b> (点击显示详情)</summary>
+
+| key                   | feature (true=disabled / false=enabled) | default    |
+|:----------------------|:----------------------------------------|:-----------|
+| `selectLockedCells`   | Select locked cells                     | enabled    |
+| `selectUnlockedCells` | Select unlocked cells                   | enabled    |
+| `formatCells`         | Format cells                            | disabled   |
+| `formatColumns`       | Format columns                          | disabled   |
+| `formatRows`          | Format rows                             | disabled   |
+| `insertColumns`       | Insert columns                          | disabled   |
+| `insertRows`          | Insert rows                             | disabled   |
+| `insertHyperlinks`    | Insert hyperlinks                       | disabled   |
+| `deleteColumns`       | Delete columns                          | disabled   |
+| `deleteRows`          | Delete rows                             | disabled   |
+| `sort`                | Sort                                    | disabled   |
+| `autoFilter`          | Filter                                  | disabled   |
+| `pivotTables`         | Use PivotTable reports                  | disabled   |
+| `objects`             | Edit objects                            | enabled    |
+| `scenarios`           | Edit scenarios                          | enabled    |
+</details>
+
+- `ws['!autofilter']`: 自动筛选下面的模式：
+
+```typescript
+type AutoFilter = {
+  ref:string; // A-1 based range representing the AutoFilter table range
+}
+```
+
+#### 图表对象
+
+图表会被显示为标准的数据表。要注意和`!type`被设置为`"chart"`的属性进行区分。
+
+底层数据和`!ref`指的是图表中的缓存数据。 图表的第一行是底层标题。
+
+#### 宏对象
+
+宏对象会被显示为标准的数据表。注意与`!type`设置为`"macro"`的属性进行区分。
+
+#### 对话框对象
+
+对话框对象会被显示为标准的数据表。注意与`!type`设置为`"dialog"`的属性进行区分。
+
+### 工作簿对象
