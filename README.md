@@ -993,3 +993,27 @@ wb.Custprops["Custom Property"] = "Custom Value";
 /* force the Author to be "SheetJS" */
 XLSX.write(wb, {Props:{Author:"SheetJS"}});
 ```
+
+### 工作簿级别的特性
+
+`wb.Workbook` 存储工作簿级别的特性。
+
+#### 定义名称
+
+`wb.Workbook.Names` 是一个定义名称对象的数组，这些名称对象都有键：
+
+<details>
+  <summary><b>定义名称属性</b> (点击显示)</summary>
+
+| Key       | Description    |
+|:----------|:--------------|
+| `Sheet`   | 名称的范围。  数据表的索引 (0 = 第一章张数据表) 或`null` (工作簿)  |
+| `Name`    | 区分大小写的名称。 标准的规则应用** |
+| `Ref`     | A1单元格样式的引用 (`"Sheet1!$A$1:$D$20"`) |
+| `Comment` | 注释 (只适用于XLS/XLSX/XLSB) |
+
+</details>
+
+Excel 允许两个表格范围定义的名称共享相同的名称。但是一个表格范围的名称不能和一个工作簿范围的名称相冲突。工作簿写入函数不强制这样的约束。
+
+#### 工作簿视图
