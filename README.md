@@ -942,3 +942,11 @@ type AutoFilter = {
 对话框对象会被显示为标准的数据表。注意与`!type`设置为`"dialog"`的属性进行区分。
 
 ### 工作簿对象
+
+`workbook.SheetNames` 是工作簿内工作表的有序列表。
+
+`wb.Sheets[sheetname]` 返回一个表示工作表的对象。
+
+`wb.Props` 是一个存储标准属性的对象。`wb.Custprops` 存储自定义的属性。因为XLS标准属性偏离了XLSX标准，所以XLS解析把核心的属性存储在两个属性中。
+
+`wb.Workbook` 存储[工作簿级别的特性](#workbook-level-attributes).
