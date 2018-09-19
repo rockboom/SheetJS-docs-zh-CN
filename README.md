@@ -950,3 +950,46 @@ type AutoFilter = {
 `wb.Props` 是一个存储标准属性的对象。`wb.Custprops` 存储自定义的属性。因为XLS标准属性偏离了XLSX标准，所以XLS解析把核心的属性存储在两个属性中。
 
 `wb.Workbook` 存储[工作簿级别的特性](#workbook-level-attributes).
+
+#### 工作簿文件属性
+
+各种各样的文件格式为不同的文件属性使用不同的内置名称。工作簿的`Props`对象用来规范这些名称。
+
+<details>
+  <summary><b>文件属性</b> (点击显示详情)</summary>
+
+| JS Name       | Excel Description              |
+|:--------------|:-------------------------------|
+| `Title`       | Summary tab "Title"            |
+| `Subject`     | Summary tab "Subject"          |
+| `Author`      | Summary tab "Author"           |
+| `Manager`     | Summary tab "Manager"          |
+| `Company`     | Summary tab "Company"          |
+| `Category`    | Summary tab "Category"         |
+| `Keywords`    | Summary tab "Keywords"         |
+| `Comments`    | Summary tab "Comments"         |
+| `LastAuthor`  | Statistics tab "Last saved by" |
+| `CreatedDate` | Statistics tab "Created"       |
+
+</details>
+
+例如设置工作簿的title属性：
+
+```js
+if(!wb.Props) wb.Props = {};
+wb.Props.Title = "Insert Title Here";
+```
+
+自定义的属性会被添加到工作簿的`Custom`对象中：
+
+```js
+if(!wb.Custprops) wb.Custprops = {};
+wb.Custprops["Custom Property"] = "Custom Value";
+```
+
+写入函数将会处理选项对象的`Props`键：
+
+```js
+/* force the Author to be "SheetJS" */
+XLSX.write(wb, {Props:{Author:"SheetJS"}});
+```
