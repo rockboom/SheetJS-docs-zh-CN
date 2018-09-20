@@ -1017,3 +1017,17 @@ XLSX.write(wb, {Props:{Author:"SheetJS"}});
 Excel 允许两个表格范围定义的名称共享相同的名称。但是一个表格范围的名称不能和一个工作簿范围的名称相冲突。工作簿写入函数不强制这样的约束。
 
 #### 工作簿视图
+
+`wb.Workbook.Views` 是一个工作簿视图对象数组，这些视图对象有keys。
+
+| Key | Description |
+|:----|:------------|
+| `RTL` | 如果值为true，从左到右的显示 |
+
+#### 混合的工作簿属性
+
+| Key  | Description   |
+|:-----|:--------------|
+| `CodeName`        | [VBA Project Workbook Code Name](#vba-and-macros)            |
+| `date1904`        | 时间: 0/false 表示1900系统时间, 1/true 表示1904系统时间        |
+| `filterPrivacy`   | 警告或去除存储的个人验证信息                                   |
