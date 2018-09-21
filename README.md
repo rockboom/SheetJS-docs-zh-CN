@@ -1069,3 +1069,47 @@ A1单元格样式字符串被存储在`f`字段中。虽然不同的文件格式
 }
 ```
 </details>
+
+**数组公式**
+
+数组公式被存储在数组块左上角的单元格内。一个数组公式的所有单元格都会有于该范围对应的`F`字段。一个单一的单元格公式要注意于`F`字段所存储的纯公式进行区分。
+
+<details>
+  <summary><b>数组公式示例</b> (点击显示详情)</summary>
+
+例如设置单元格`C1`为数组公式`{=SUM(A1:A3*B1:B3)}`：
+
+```js
+worksheet['C1'] = { t:'n', f: "SUM(A1:A3*B1:B3)", F:"C1:C1" };
+```
+
+对于多个单元格的数组公式，每一个单元格都有相同的数组范围，不过只有第一个单元格指定公式。考虑`D1:D3=A1:A3*B1:B3`：
+
+```js
+worksheet['D1'] = { t:'n', F:"D1:D3", f:"A1:A3*B1:B3" };
+worksheet['D2'] = { t:'n', F:"D1:D3" };
+worksheet['D3'] = { t:'n', F:"D1:D3" };
+```
+</details>
+
+工具函数和编写器被用来检查`F`字段的存在，并且忽略单元格内任何可能的公式元素`f`，这些单元格并不包含起始单元格。这些操作函数并不会被要求执行公式的校验。
+
+<details>
+  <summary><b>公式输出工具函数</b> (点击显示详情)</summary>
+
+`sheet_to_formulae`方法生成为每个公式或者是数组公式生成一行。数组公式被渲染在`range=formula`的表格内，而纯单元格被渲染在`cell=formula or value`的表格内。注意字符串的迭代会有前缀符号`'`，与Excel公式栏显示的一致。
+
+<details>
+  <summary><b>公式文件格式细节</b> (点击显示详情)</summary>
+
+| Storage Representation | Formats                  | Read  | Write |
+|:-----------------------|:-------------------------|:-----:|:-----:|
+| A1-style strings       | XLSX                     |  :o:  |  :o:  |
+| RC-style strings       | XLML and plain text      |  :o:  |  :o:  |
+| BIFF Parsed formulae   | XLSB and all XLS formats |  :o:  |       |
+| OpenFormula formulae   | ODS/FODS/UOS             |  :o:  |  :o:  |
+
+因为Excel禁止单元格的命名与A1的名称或者是RC样式单元格引用相冲突，可能会进行不是那么简单的正则变化。DIFF解析的公式必须被明确的解开。OpenFormula可以转换正则表达式。
+</details>
+
+#### 列属性
