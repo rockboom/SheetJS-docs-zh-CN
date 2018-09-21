@@ -1113,3 +1113,47 @@ worksheet['D3'] = { t:'n', F:"D1:D3" };
 </details>
 
 #### 列属性
+
+每张表都会有`!cols`数组，如果展开的话就是`ColInfo`的一个集合，有下列的属性：
+
+```typescript
+type ColInfo = {
+  /* visibility */
+  hidden?: boolean; // if true, the column is hidden
+
+  /* column width is specified in one of the following ways: */
+  wpx?:    number;  // width in screen pixels
+  width?:  number;  // width in Excel's "Max Digit Width", width*256 is integral
+  wch?:    number;  // width in characters
+
+  /* other fields for preserving features from files */
+  MDW?:    number;  // Excel's "Max Digit Width" unit, always integral
+};
+```
+</details>
+
+<details>
+  <summary><b>为什么有三种宽度类型？</b> (点击显示详情)</summary>
+有三种不同的宽度类型对应于电子数据表存储列宽的三种不同方式。
+
+SYLK和其他的纯文本格式使用原生的字符计算。像Visicalc和Multiplan这样的同时期的工具是基于字符的。因为字符有相同的宽度，足以存储一个计数。这样的传统也延续到了BIFF格式。
+
+SpreadsheetML (2003) 尝试通过标准化整个文件中的屏幕像素计数来与HTML对齐。列宽、行高以及其他的测量使用像素。当像素和字符数量不一致时，Excel四舍五入结果。
+
+XLSX内部用一个模糊的"最大数位宽度"表存储列宽。最大数字宽度是渲染时最大数字的宽度，通常字符"0"是最宽的。内部的宽度必须是宽度除以256的整数倍。ECMA-376介绍了一个公式用于像素和内部宽度之间的转换。这代表一种混合的方式。
+
+读取函数尝试去填充全部的三种属性。写函数努力尝试将指定值循环到所需类型。为了阻止潜在的冲突。首先操作应该要删除其他的属性。列入，当改变像素宽度时，删除`wch` 和 `width`属性。
+
+
+<details>
+  <summary><b>执行细节</b> (点击显示详情)</summary>
+
+给出的这些约束可能决定了MDW没有检查字体！解析器通过从宽度转换为像素并返回来猜测像素宽度，重复所有可能的MDW并选择最小化村务的MDW。XLML实际上存储额像素宽度，所以猜想会在相反的方向运行。
+
+即使所有的信息都是可用的，也会期望写入函数遵循下面的优先级顺序：
+
+1) 如果 `width` 字段可用，优先使用`width`。
+2) 如果 `wpx` 字段可用，请使用`wpx`。
+3) 如果 `wch` 字段可用，请使用`wch`。
+
+</details>
