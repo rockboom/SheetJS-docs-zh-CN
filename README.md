@@ -1157,3 +1157,33 @@ XLSX内部用一个模糊的"最大数位宽度"表存储列宽。最大数字�
 3) 如果 `wch` 字段可用，请使用`wch`。
 
 </details>
+
+#### 行属性
+
+如果`!rows` 数组在每张电子表中都存在，那就是一个`RowInfo`对象的集合，集合包含一下的属性：
+
+```typescript
+type RowInfo = {
+  /* visibility */
+  hidden?: boolean; // if true, the row is hidden
+
+  /* row height is specified in one of the following ways: */
+  hpx?:    number;  // height in screen pixels
+  hpt?:    number;  // height in points
+
+  level?:  number;  // 0-indexed outline / group level
+};
+```
+注意：Excel UI显示基本大纲级别为`1`,最大级别为`8`。`level`字段存储基本大纲级别为`0`，最大级别为`7`。
+
+<details>
+  <summary><b>实现细节</b> (点击展示详情)</summary>
+
+Excel内部以点为单位存储行高。默认的分辨率是72DPI或者是96DPI，所以像素和点的大小应该相同。不同的分辨率他们可能不同，因此库分开了这些概念：
+
+即使所有的信息都可用，写入函数也应该遵循下面的优先级顺序：
+1)如果`hpx`可用，就使用 `hpx`像素高度。 
+2) 如果`hpx`可用，就使用 `hpx`像素高度。
+</details>
+
+#### 数字格式
