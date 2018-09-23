@@ -1269,3 +1269,26 @@ ws['A3'].l = { Target:"http://sheetjs.com", Tooltip:"Find us @ SheetJS.com!" };
 ```js
 ws['A2'].l = { Target:"#E2" }; /* link to cell E2 */
 ```
+
+#### 单元格注释
+
+单元格注释是对象，被存储在单元格对象的`c`数组内。实际上注释的内容根据注释的作者被分成了小块。每一个注释对象的`a`字段存储注释的作者，`t`字段是注释的纯文字展示。
+
+例如下面的片段在单元格`A1`内添加了单元格注释：
+
+```js
+if(!ws.A1.c) ws.A1.c = [];
+ws.A1.c.push({a:"SheetJS", t:"I'm a little comment, short and stout!"});
+```
+注意：XLSB对作者的名字施加54个字符的限制。名字的长度超过54个字符可能造成其他的格式问题。
+
+把注释标记为普通的隐藏，只需设置`hidden`属性：
+
+```js
+if(!ws.A1.c) ws.A1.c = [];
+ws.A1.c.push({a:"SheetJS", t:"This comment is visible"});
+
+if(!ws.A2.c) ws.A2.c = [];
+ws.A2.c.hidden = true;
+ws.A2.c.push({a:"SheetJS", t:"This comment will be hidden"});
+```
