@@ -1292,3 +1292,33 @@ if(!ws.A2.c) ws.A2.c = [];
 ws.A2.c.hidden = true;
 ws.A2.c.push({a:"SheetJS", t:"This comment will be hidden"});
 ```
+
+#### 数据表能见度
+
+Excel支持将表格隐藏在更低的标签栏。表格数据存储文件内，但是UI不容易让它可以使用。标准的隐藏表格会被显示在"Unhide"菜单内。Excel也有"very hidden"表格，这些表格不能被显示在菜单内。只可以通过Vb编辑器访问。
+
+能见度的设置被存储在表格属性数组的`Hidden`属性当中。
+
+<details>
+  <summary><b>更多细节</b> (点击显示详情)</summary>
+
+| Value | Definition  |
+|:-----:|:------------|
+|   0   | Visible     |
+|   1   | Hidden      |
+|   2   | Very Hidden |
+
+更多详情请查看<https://rawgit.com/SheetJS/test_files/master/sheet_visibility.xlsx>：
+
+```js
+> wb.Workbook.Sheets.map(function(x) { return [x.name, x.Hidden] })
+[ [ 'Visible', 0 ], [ 'Hidden', 1 ], [ 'VeryHidden', 2 ] ]
+```
+
+非Excel格式不支持"Very Hidden"状态。测试一个数据比哦啊是否可见的最好方式是检查是否`Hidden`属性为逻辑truth：
+
+```js
+> wb.Workbook.Sheets.map(function(x) { return [x.name, !x.Hidden] })
+[ [ 'Visible', true ], [ 'Hidden', false ], [ 'VeryHidden', false ] ]
+```
+</details>
