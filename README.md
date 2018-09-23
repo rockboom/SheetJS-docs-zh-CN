@@ -1407,3 +1407,58 @@ function wb_has_macro(wb/*:workbook*/)/*:boolean*/ {
 | `"buffer"` | nodejs Buffer                                                   |
 | `"array"`  | 数组: 8位的无符号型整数数组 (字节 `n` 是 `data[n]`)      |
 | `"file"`   | 字符串: 将要被读取的文件的路径 (只在nodejs中可用)            |
+
+### 猜测文件类型
+
+<details>
+  <summary><b>实现细节</b> (点击显示详情)</summary>
+
+Excel和其他的电子数据表格工具读取前几个字节并且应用试探法确定稳定类型。这个支持文件类型的双关：用`.xls`扩展的重命名文件会告诉你的电脑使用Excel打开文件而且Excel知道如何去处理它。这个库应用了相似的逻辑：
+
+| Byte 0 | Raw File Type | Spreadsheet Types                                   |
+|:-------|:--------------|:----------------------------------------------------|
+| `0xD0` | CFB Container | BIFF 5/8 or password-protected XLSX/XLSB or WQ3/QPW |
+| `0x09` | BIFF Stream   | BIFF 2/3/4/5                                        |
+| `0x3C` | XML/HTML      | SpreadsheetML / Flat ODS / UOS1 / HTML / plain text |
+| `0x50` | ZIP Archive   | XLSB or XLSX/M or ODS or UOS2 or plain text         |
+| `0x49` | Plain Text    | SYLK or plain text                                  |
+| `0x54` | Plain Text    | DIF or plain text                                   |
+| `0xEF` | UTF8 Encoded  | SpreadsheetML / Flat ODS / UOS1 / HTML / plain text |
+| `0xFF` | UTF16 Encoded | SpreadsheetML / Flat ODS / UOS1 / HTML / plain text |
+| `0x00` | Record Stream | Lotus WK\* or Quattro Pro or plain text             |
+| `0x7B` | Plain text    | RTF or plain text                                   |
+| `0x0A` | Plain text    | SpreadsheetML / Flat ODS / UOS1 / HTML / plain text |
+| `0x0D` | Plain text    | SpreadsheetML / Flat ODS / UOS1 / HTML / plain text |
+| `0x20` | Plain text    | SpreadsheetML / Flat ODS / UOS1 / HTML / plain text |
+
+DBF文件会基于前几个字节以及第三个和第四个字节进行检测(对应于文件日期的月和天)。
+
+纯文本格式的猜测遵循下面的优先级顺序：
+
+| Format | Test                                                                |
+|:-------|:--------------------------------------------------------------------|
+| XML    | `<?xml` 出现在前1024个字符                        |
+| HTML   | 以 `<`开头并且HTML标签出现在前1024个字符 * |
+| XML    | 以 `<`开头                      |
+| RTF    | 以 `{\rt`开头                           |
+| DSV    | 以`/sep=.$/`开头，分隔符是指定的字符串      |
+| DSV    | 前1024个字符中未引用的`";"` 字符比 `"\t"` 或者 `","` 多|
+| TSV    | 前1024个字符中未引用的`"\t"`字符比 `","` 多      |
+| CSV    | 前1024个字符中的一个是逗号`","`                   |
+| ETH    | 以`socialcalc:version:`开头                                   |
+| PRN    | (默认)                            |
+
+- HTML 标签包括：`html`, `table`, `head`, `meta`, `script`, `style`, `div`
+
+<details>
+  <summary><b>为什么随机的文本文件合法？</b> (点击显示详情)</summary>
+Excel在读取文件方面非常积极。添加一个XLS 扩展到任意的显示文件，让Excel认为该文件可能是一个CSV或者是TSV文件，即使它仅仅是一列！这个库尝试去复制那样的行为。
+
+最好的方法是去校验想要得到的工作表并且确保它有期待的行数或列数。提取范围非常简单：
+
+```js
+var range = XLSX.utils.decode_range(worksheet['!ref']);
+var ncols = range.e.c - range.s.c + 1, nrows = range.e.r - range.s.r + 1;
+```
+
+</details>
