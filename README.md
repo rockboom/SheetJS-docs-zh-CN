@@ -1344,3 +1344,53 @@ VBA宏命令存储在特殊的数据blob中，当`bookVBA`选项为true时，blo
 
 <details>
 	<summary><b>检测工作簿内宏指令</b> (点击显示)</summary>
+如果宏指令存在，那么`vbaraw`字段就可以被设置，所以测试简单：
+
+```js
+function wb_has_macro(wb/*:workbook*/)/*:boolean*/ {
+	if(!!wb.vbaraw) return true;
+	const sheets = wb.SheetNames.map((n) => wb.Sheets[n]);
+	return sheets.some((ws) => !!ws && ws['!type']=='macro');
+}
+```
+</details>
+
+## 解析选项
+
+导出的`read` 和 `readFile`函数接受选项参数：
+| Option Name | Default | Description                                          |
+| :---------- | ------: | :--------------------------------------------------- |
+|`type`       |         | 输入数据编码 (查看下方的输入类型)           |
+|`raw`        | false   | 如果为true，纯文本解析不会解析值 ** |
+|`codepage`   |         | 如果指定， 合适的时候使用编码页面**      |
+|`cellFormula`| true    | 保存公式到`f`字段                       |
+|`cellHTML`   | true    | 解析富文本并把HTML保存到`.h` 字段      |
+|`cellNF`     | false   | 把数字格式的字符串保存到 `.z` 字段          |
+|`cellStyles` | false   | 把样式/主题保存到 `.s` 字段              |
+|`cellText`   | true    | 生成格式化文本`.w` 字段           |
+|`cellDates`  | false   | 把日期存储为类型 `d` (默认是 `n`)             |
+|`dateNF`     |         | 如果指定，使用代码日期14的字符串 **     |
+|`sheetStubs` | false   | 为子单元格创建`z`类型的单元格对象       |
+|`sheetRows`  | 0       | 如果`sheetRows`的值 >0, 读取第一个`sheetRows` 行 **  |
+|`bookDeps`   | false   | 值为true，解析计算链                   |
+|`bookFiles`  | false   | 如果值为true， 添加原始文件到工作簿对象 **  |
+|`bookProps`  | false   | 如果值为true， 只有足够的解析才能得到工作簿的元数据**   |
+|`bookSheets` | false   | 如果值为true，只有足够的解析才能得到表格名称   |
+|`bookVBA`    | false   | 如果值为true，复制 VBA blob 到 `vbaraw` 字段 **          |
+|`password`   | ""      | 如果定义了密码并且文件已经加密，就会使用密码 **    |
+|`WTF`        | false   | 如果值为true， 对意外的文件特性抛出错误 ** |
+
+- 虽然`cellNF`为false，但是格式化的文本也会被生成并且保存到`.w`字段。
+- 在一些情况下，即使`bookSheets`为false，数据表也可能被解析。
+- Excel积极尝试从CSV和其他纯文本中解释值。这会导致意外的行为！`raw`选项抑制值解析。
+- `bookSheets` 和 `bookProps` 结合起来提供两套信息集合。
+- `Deps`将会是一个空对象，如果`bookDeps`为false。
+- `bookFiles`的行为依赖于文件类型：
+    * `keys` 数组(ZIP里面的路径)用于基于ZIP基础的格式
+    * `files`哈希(将路径映射到表示文件的的对象)用于ZIP
+    * `cfb`对象用于使用CFB容器的格式
+- `sheetRows-1`将会在查看JSON对象输出时生成(因为解析数据时，数据头行会被计算成一行)
+- `bookVBA`仅仅在`xl/vbaProject.bin`展示原始的VBA CFB对象。不解析数据。XLSM 和 XLSB把VBA CFB对象存储在`xl/vbaProject.bin`。BIFF8 XLS将VBA条目与核心工作簿条目混合在一起，因此库从XLS CFB容器生成了一个新的XLSB兼容blob。
+- `codepage`用于没有`CodePage`记录的BIFF2 - BIFF5文件以及在`type:"binary"`内没有BOM的CSV文件。
+- 目前仅支持XOR加密。当文件使用其他的加密方法时会抛出不支持的错误。
+- WTF主要用于发展。默认情况下，单一的工作表内，解析器将会抑制读取错误，允许你从解析正确的工作表内读取。设置`WTF:1`强制这些错误被抛出。
