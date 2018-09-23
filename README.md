@@ -1322,3 +1322,25 @@ Excel支持将表格隐藏在更低的标签栏。表格数据存储文件内，
 [ [ 'Visible', true ], [ 'Hidden', false ], [ 'VeryHidden', false ] ]
 ```
 </details>
+
+#### VBA和宏命令
+
+VBA宏命令存储在特殊的数据blob中，当`bookVBA`选项为true时，blob会暴露在工作簿对象的`vbaraw`属性中。VBA宏命令支持 `XLSM`, `XLSB`, 和 `BIFF8 XLS` 格式。如果blob存在于工作簿中，并且和工作簿的名字有关联，支持的格式写入函数会自动插入数据blob。
+
+<details>
+	<summary><b>自定义编码名称</b> (点击显示)</summary>
+
+工作簿编码名称存储在`wb.Workbook.WBProps.CodeName`中。默认情况下Excel将会设置成`ThisWorkbook`或者是一个翻译的短语比如`DieseArbeitsmappe`。工作表和图表的编码名称在工作表属性对象的`wb.Workbook.Sheets[i].CodeName`中。宏数据表和对话数据表会被忽略。
+
+读取函数和写入函数会保护编码名称，但是当在一个不同的工作簿内增加一个VBA blob时，编码名称必须被手动设置。
+
+</details>
+
+<details>
+	<summary><b>宏数据表</b> (点击显示)</summary>
+
+老版本的Excel也支持非VBA的宏数据表表格类型，宏数据表存储了一些自动命令。他们暴露在`!type`设置成`"macro"`的对象中。
+</details>
+
+<details>
+	<summary><b>检测工作簿内宏指令</b> (点击显示)</summary>
