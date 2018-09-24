@@ -1707,3 +1707,42 @@ XLSX.utils.sheet_add_json(ws, [
 ```
 
 </details>
+
+### HTML Table 输入
+
+`XLSX.utils.table_to_sheet`获取一个table DOM元素，并且返回一个工作表寻找输入的table。Numbers会被解析。所有的数据将会被存储为字符串。
+
+`XLSX.utils.table_to_book`基于工作表会产生一个最小的工作簿。
+
+两个函数接受选项参数：
+
+| Option Name |  Default | Description                                         |
+| :---------- | :------: | :-------------------------------------------------- |
+|`raw`        |          | 如果值为true,  每一个单元格将会保存原始的字符串          |
+|`dateNF`     |  FMT 14  | 字符串输出使用指定的日期格式          |
+|`cellDates`  |  false   | 把日期存储为类型 `d` (默认是 `n`)            |
+|`sheetRows`  |    0     | 如果值 >0, 读取表格的第一个`sheetRows`行 |
+|`display`    |  false   | 如果值为true, 隐藏的行和单元格将不会被解析   |
+
+<details>
+  <summary><b>例子</b> (点击显示)</summary>
+
+生成示例表单，以HTML table开始：
+
+```html
+<table id="sheetjs">
+<tr><td>S</td><td>h</td><td>e</td><td>e</td><td>t</td><td>J</td><td>S</td></tr>
+<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+<tr><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+</table>
+```
+
+处理表格:
+
+```js
+var tbl = document.getElementById('sheetjs');
+var wb = XLSX.utils.table_to_book(tbl);
+```
+</details>
+
+注意：`XLSX.read`能够处理表示为字符串的HTML。
