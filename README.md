@@ -1462,3 +1462,26 @@ var ncols = range.e.c - range.s.c + 1, nrows = range.e.r - range.s.r + 1;
 ```
 
 </details>
+
+## 写入选项
+
+导出的`write` 和 `writeFile`函数接受一个选型参数：
+
+| Option Name |  Default | Description                                         |
+| :---------- | -------: | :-------------------------------------------------- |
+|`type`       |          | 输出数据编码(查看下面的输出类型)        |
+|`cellDates`  |  `false` | 把字节存储为类型`d` (默认是 `n`)            |
+|`bookSST`    |  `false` | 生成共享的字符串表格 **                     |
+|`bookType`   | `"xlsx"` | 工作簿的类型 (查看下方支持的格式)  |
+|`sheet`      |     `""` | 单页格式的工作表名称 **       |
+|`compression`|  `false` | 基于ZIP的格式使用ZIP压缩 **        |
+|`Props`      |          | 写入时覆盖工作簿的属性 **        |
+|`themeXLSX`  |          | 写入XLSX/XLSB/XLSM时，覆盖主题XML **   |
+|`ignoreEC`   |   `true` | 禁止"数字作为文本"错误 **                 |
+
+- `bookSST` 较慢并且有更多的内存密集型，不过与iOS数字老版本有更好的兼容性。
+- 原始数据时唯一保证存储的东西。在README文件中没有描述的功能可能无法序列化。
+- `cellDates` 仅用于XLSX输出并且不能保证与第三方读取器一起工作。Excel自身不经常用类型`d`编写单元格，因此非Excel工具会忽视数据或者是有日期错误。
+- `Props`是一个备份工作簿`Props`字段的对象。从[工作簿文件属性](#workbook-file-properties) 部分查看表格。
+- 如果指定，来自`themeXLSX`的字符串会被存储为XLSX/XLSB/XLSM文件的基本主题(ZIP中的`xl / theme / theme1.xml`)。
+- 由于在程序中有一个bug，一些功能比如"分列"会在忽略错误条件的工作表上使Excel崩溃。默认情况下写入函数将会标记文件忽略错误。设置`ignoreEC`为`false`来禁止。
