@@ -1573,7 +1573,7 @@ var ws = XLSX.utils.aoa_to_sheet([
 |`sheetStubs` |  false   | 为`null`值创建类型为`z`的单元格对象   |
 |`origin`     |          | 只用指定的单元格作为指定的起点 (查看下表)    |
 
-期望`origin`是下表中的一个：
+`origin`应该是以下之一：
 
 | `origin`         | Description                                               |
 | :--------------- | :-------------------------------------------------------- |
@@ -1599,3 +1599,111 @@ XXX| A | B | C | D | E | F | G |
 ```
 
 此工作表可按照顺序`A1:G1, A2:B4, E2:G4, A5:G5`构建：
+
+```js
+/* Initial row */
+var ws = XLSX.utils.aoa_to_sheet([ "SheetJS".split("") ]);
+
+/* Write data starting at A2 */
+XLSX.utils.sheet_add_aoa(ws, [[1,2], [2,3], [3,4]], {origin: "A2"});
+
+/* Write data starting at E2 */
+XLSX.utils.sheet_add_aoa(ws, [[5,6,7], [6,7,8], [7,8,9]], {origin:{r:1, c:4}});
+
+/* Append row */
+XLSX.utils.sheet_add_aoa(ws, [[4,5,6,7,8,9,0]], {origin: -1});
+```
+</details>
+
+### 对象数组输入
+
+`XLSX.utils.json_to_sheet`获取对象数组并且返回一张基于对象自动生成"headers"的工作表。默认的列顺序由第一次出现的字段决定，这些字段通过使用`Object.keys`得到，不过可以使用选项参数覆盖。
+
+| Option Name |  Default | Description                                         |
+| :---------- | :------: | :-------------------------------------------------- |
+|`header`     |          | 使用指定的列顺序 (默认 `Object.keys`)  |
+|`dateNF`     |  FMT 14  | 字符串输出使用指定的日期格式          |
+|`cellDates`  |  false   | 存储日期为类型 `d` (默认是 `n`)            |
+|`skipHeader` |  false   | 如果值为true, 输出不包含header行       |
+
+<details>
+  <summary><b>示例</b> (点击显示)</summary>
+
+原始的表单不能以明显的方法复制，因为JS对象的keys必须是独一无二的。之后用`e_1` 和 `S_1`替换第二个`e` 和 `S`。
+
+```js
+var ws = XLSX.utils.json_to_sheet([
+  { S:1, h:2, e:3, e_1:4, t:5, J:6, S_1:7 },
+  { S:2, h:3, e:4, e_1:5, t:6, J:7, S_1:8 }
+], {header:["S","h","e","e_1","t","J","S_1"]});
+```
+
+或者可以跳过header行：
+
+```js
+var ws = XLSX.utils.json_to_sheet([
+  { A:"S", B:"h", C:"e", D:"e", E:"t", F:"J", G:"S" },
+  { A: 1,  B: 2,  C: 3,  D: 4,  E: 5,  F: 6,  G: 7  },
+  { A: 2,  B: 3,  C: 4,  D: 5,  E: 6,  F: 7,  G: 8  }
+], {header:["A","B","C","D","E","F","G"], skipHeader:true});
+```
+</details>
+
+`XLSX.utils.sheet_add_json`获取一个对象数组，并且更新一个已存在的工作表对象。与`json_to_sheet`一样有相同的过程，并且接受一个选项参数：
+
+| Option Name |  Default | Description                                         |
+| :---------- | :------: | :-------------------------------------------------- |
+|`header`     |          | 使用指定的列排序 (默认 `Object.keys`)  |
+|`dateNF`     |  FMT 14  | 字符串输出使用指定的日期格式      |
+|`cellDates`  |  false   | 把存储日期为类型 `d` (默认是 `n`)            |
+|`skipHeader` |  false   | 如果值为true, 输出不包含header行        |
+|`origin`     |          | 使用指定的单元格作为起点 (查看下方表格)    |
+
+`origin`应该是以下之一：
+
+| `origin`         | Description                                               |
+| :--------------- | :-------------------------------------------------------- |
+| (cell object)    | 使用指定的单元格(单元格对象)                          |
+| (string)         | 使用指定的单元格 (A1样式的单元格)                        |
+| (number >= 0)    | 从指定行的第一列开始(0索引)  |
+| -1               | 从第一列开始添加到工作表底部  |
+| (default)        | 从单元格A1开始                                        |
+
+<details>
+  <summary><b>例子</b> (点击展示)</summary>
+考虑工作表：
+
+```
+XXX| A | B | C | D | E | F | G |
+---+---+---+---+---+---+---+---+
+ 1 | S | h | e | e | t | J | S |
+ 2 | 1 | 2 |   |   | 5 | 6 | 7 |
+ 3 | 2 | 3 |   |   | 6 | 7 | 8 |
+ 4 | 3 | 4 |   |   | 7 | 8 | 9 |
+ 5 | 4 | 5 | 6 | 7 | 8 | 9 | 0 |
+```
+工作表能够以`A1:G1, A2:B4, E2:G4, A5:G5`顺序构建：
+
+```js
+/* Initial row */
+var ws = XLSX.utils.json_to_sheet([
+  { A: "S", B: "h", C: "e", D: "e", E: "t", F: "J", G: "S" }
+], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true});
+
+/* Write data starting at A2 */
+XLSX.utils.sheet_add_json(ws, [
+  { A: 1, B: 2 }, { A: 2, B: 3 }, { A: 3, B: 4 }
+], {skipHeader: true, origin: "A2"});
+
+/* Write data starting at E2 */
+XLSX.utils.sheet_add_json(ws, [
+  { A: 5, B: 6, C: 7 }, { A: 6, B: 7, C: 8 }, { A: 7, B: 8, C: 9 }
+], {skipHeader: true, origin: { r: 1, c: 4 }, header: [ "A", "B", "C" ]});
+
+/* Append row */
+XLSX.utils.sheet_add_json(ws, [
+  { A: 4, B: 5, C: 6, D: 7, E: 8, F: 9, G: 0 }
+], {header: ["A", "B", "C", "D", "E", "F", "G"], skipHeader: true, origin: -1});
+```
+
+</details>
