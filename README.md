@@ -1753,3 +1753,53 @@ var wb = XLSX.utils.table_to_book(tbl);
 
 <details>
   <summary><b>例子</b> (点击显示)</summary>
+
+示例表：
+
+```js
+> var o = XLSX.utils.sheet_to_formulae(ws);
+> [o[0], o[5], o[10], o[15], o[20]];
+[ 'A1=\'S', 'F1=\'J', 'D2=4', 'B3=3', 'G3=8' ]
+```
+</details>
+
+### 定界分隔符输出
+
+作为一个`writeFile` CSV 类型的替代，`XLSX.utils.sheet_to_csv`也会产生CSV输出。这个函数获取一个选项参数：
+
+| Option Name |  Default | Description                                         |
+| :---------- | :------: | :-------------------------------------------------- |
+|`FS`         |  `","`   | "字段分隔符"表示字段之间的分隔符         |
+|`RS`         |  `"\n"`  | "记录分隔符"表示行之间的分隔符           |
+|`dateNF`     |  FMT 14  | 字符串输出使用指定的日期格式         |
+|`strip`      |  false   | 删除每条记录中的尾随字段分隔符**  |
+|`blankrows`  |  true    | 包含CSV输出的空白行              |
+|`skipHidden` |  false   | 跳过CSV输出的隐藏行/列       |
+
+- `strip`将删除默认`FS / RS`下每行的尾随逗号
+`blankrows`必须设置为`false`才能跳过空白行。
+
+<details>
+  <summary><b>例子</b> (点击显示)</summary>
+
+示例表：
+
+```js
+> console.log(XLSX.utils.sheet_to_csv(ws));
+S,h,e,e,t,J,S
+1,2,3,4,5,6,7
+2,3,4,5,6,7,8
+> console.log(XLSX.utils.sheet_to_csv(ws, {FS:"\t"}));
+S	h	e	e	t	J	S
+1	2	3	4	5	6	7
+2	3	4	5	6	7	8
+> console.log(XLSX.utils.sheet_to_csv(ws,{FS:":",RS:"|"}));
+S:h:e:e:t:J:S|1:2:3:4:5:6:7|2:3:4:5:6:7:8|
+```
+</details>
+
+#### #### UTF-16 Unicode 文本
+
+`txt`输出类型使用tab字符作为字段分隔符。如果`codepage`可用(包含全部的分发但不是核心)，输出将会被编码为`CP1200`并且BOM会被预置。
+
+`XLSX.utils.sheet_to_txt`获取和`sheet_to_csv`一样的参数。
