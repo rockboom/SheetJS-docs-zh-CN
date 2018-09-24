@@ -1746,3 +1746,10 @@ var wb = XLSX.utils.table_to_book(tbl);
 </details>
 
 注意：`XLSX.read`能够处理表示为字符串的HTML。
+
+### 公式输出
+
+`XLSX.utils.sheet_to_formulae`生成一个命令数组，命令显示了一个人会怎样进入一个应用。每一个入口都是表格`A1-cell-address=formula-or-value`。字符串文字以"`"为前缀，符合Excel。
+
+<details>
+  <summary><b>例子</b> (点击显示)</summary>
