@@ -1514,3 +1514,15 @@ var ncols = range.e.c - range.s.c + 1, nrows = range.e.r - range.s.r + 1;
 - `compression`仅用于带ZIP容器的格式。
 - 格式只支持需要`sheet`选型指明工作表的单表。如果字符串为空，就会使用第一张工作表。
 - 如果`bookType`未指定值，那么`writeFile`会自动根据文件扩展名来猜测输出文件格式。他就会在上表中选择匹配扩展名的第一个格式。
+
+### 输出类型
+
+`write`函数的`type`参数备份`read`函数的`type`参数：
+| `type`     | output                                                          |
+|------------|-----------------------------------------------------------------|
+| `"base64"` | 字符串: 文件的Base64编码                             |
+| `"binary"` | 字符串: 二进制字符串 (字节 `n` 是 `data.charCodeAt(n)`)        |
+| `"string"` | 字符串: JS 字符串 (字符被解释成UTF8)              |
+| `"buffer"` | nodejs Buffer                                                   |
+| `"array"`  | ArrayBuffer, 8位无符号整数的回退数组              |
+| `"file"`   | 字符串: 将要创建的文件的地址(仅用于nodejs)       |
