@@ -1526,3 +1526,8 @@ var ncols = range.e.c - range.s.c + 1, nrows = range.e.r - range.s.r + 1;
 | `"buffer"` | nodejs Buffer                                                   |
 | `"array"`  | ArrayBuffer, 8位无符号整数的回退数组              |
 | `"file"`   | 字符串: 将要创建的文件的地址(仅用于nodejs)       |
+
+## 工具函数
+
+`sheet_to_*`函数接受一张工作表以及一个可选的选项对象。
+`*_to_sheet`函数接受一个数据对象以及一个可选的选项对象。
