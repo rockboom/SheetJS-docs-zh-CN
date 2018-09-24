@@ -1485,3 +1485,32 @@ var ncols = range.e.c - range.s.c + 1, nrows = range.e.r - range.s.r + 1;
 - `Props`是一个备份工作簿`Props`字段的对象。从[工作簿文件属性](#workbook-file-properties) 部分查看表格。
 - 如果指定，来自`themeXLSX`的字符串会被存储为XLSX/XLSB/XLSM文件的基本主题(ZIP中的`xl / theme / theme1.xml`)。
 - 由于在程序中有一个bug，一些功能比如"分列"会在忽略错误条件的工作表上使Excel崩溃。默认情况下写入函数将会标记文件忽略错误。设置`ignoreEC`为`false`来禁止。
+
+### 支持的输出格式
+
+与第三方工具的广泛兼容性，这个库支持很多种输出格式。明确的文件类型被`bookType`选项控制：
+
+| `bookType` | file ext | container | sheets | Description                     |
+| :--------- | -------: | :-------: | :----- |:------------------------------- |
+| `xlsx`     | `.xlsx`  |    ZIP    | multi  | Excel 2007+ XML Format(XML 格式)   |
+| `xlsm`     | `.xlsm`  |    ZIP    | multi  | Excel 2007+ Macro XML Format(宏 XML 格式)    |
+| `xlsb`     | `.xlsb`  |    ZIP    | multi  | Excel 2007+ Binary Format(二进制格式)     |
+| `biff8`    | `.xls`   |    CFB    | multi  | Excel 97-2004 Worksheet Format(工作簿格式)   |
+| `biff5`    | `.xls`   |    CFB    | multi  | Excel 5.0/95 Worksheet Format(工作簿格式)    |
+| `biff2`    | `.xls`   |   none    | single | Excel 2.0 Worksheet Format(工作簿格式)      |
+| `xlml`     | `.xls`   |   none    | multi  | Excel 2003-2004 (SpreadsheetML) |
+| `ods`      | `.ods`   |    ZIP    | multi  | OpenDocument Spreadsheet(开放文档格式的电子表格) |
+| `fods`     | `.fods`  |   none    | multi  | Flat OpenDocument Spreadsheet(平滑的开放文档格式的电子表格)   |
+| `csv`      | `.csv`   |   none    | single | Comma Separated Values(逗号分隔值)          |
+| `txt`      | `.txt`   |   none    | single | UTF-16 Unicode Text (TXT)       |
+| `sylk`     | `.sylk`  |   none    | single | Symbolic Link (SYLK)            |
+| `html`     | `.html`  |   none    | single | HTML Document                   |
+| `dif`      | `.dif`   |   none    | single | Data Interchange Format (DIF) (数据交换格式)  |
+| `dbf`      | `.dbf`   |   none    | single | dBASE II + VFP Extensions (DBF)(dBASE II + VFP扩展) |
+| `rtf`      | `.rtf`   |   none    | single | Rich Text Format (RTF)          |
+| `prn`      | `.prn`   |   none    | single | Lotus Formatted Text(Lotus格式化文本。)         |
+| `eth`      | `.eth`   |   none    | single | Ethercalc Record Format (ETH)(Ethercalc记录格式)   |
+
+- `compression`仅用于带ZIP容器的格式。
+- 格式只支持需要`sheet`选型指明工作表的单表。如果字符串为空，就会使用第一张工作表。
+- 如果`bookType`未指定值，那么`writeFile`会自动根据文件扩展名来猜测输出文件格式。他就会在上表中选择匹配扩展名的第一个格式。
