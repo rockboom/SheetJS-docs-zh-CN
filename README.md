@@ -2137,3 +2137,88 @@ Excel HTML工作表包含以样式编码的特殊元数据。例如`mso-number-f
 </details>
 
 ## 测试
+
+### Node
+
+<details>
+  <summary>(点击显示)</summary>
+`make test`将会运行node基础的测试。默认情况下，它以各种支持的格式对文件运行测试。要测试一种指定的文件类型，设置`FMTS`为你想要测试的类型。使用`make test_misc`可以获得指定功能的测试。
+
+```bash
+$ make test_misc   # run core tests
+$ make test        # run full tests
+$ make test_xls    # only use the XLS test files
+$ make test_xlsx   # only use the XLSX test files
+$ make test_xlsb   # only use the XLSB test files
+$ make test_xml    # only use the XML test files
+$ make test_ods    # only use the ODS test files
+```
+
+要想启用所有的错误，请设置环境变量`WTF=1`：
+
+```bash
+$ make test        # run full tests
+$ WTF=1 make test  # enable all error messages
+```
+
+`flow` and `eslint` checks are available:
+
+```bash
+$ make lint        # eslint checks
+$ make flow        # make lint + Flow checking
+$ make tslint      # check TS definitions
+```
+
+</details>
+
+### 浏览器
+
+<details>
+  <summary>(点击显示)</summary>
+核心浏览器内测试可在此repo中的`tests/index.html`中找到。启动一个本地服务器并且导航到那个目录去运行测试。`make ctestserv`将会在8080端口启动一个服务。
+
+`make ctest`将生成浏览器装置。要添加更多的文件，编辑`tests/fixtures.lst`并且添加路径。
+
+要运行完整的浏览器内测试，从[`oss.sheetjs.com`](https://github.com/SheetJS/SheetJS.github.io)克隆这个repo，并且替换`xlsx.js`文件(然后打开一个浏览器窗口跳转到`stress.html`)。
+
+```bash
+$ cp xlsx.js ../SheetJS.github.io
+$ cd ../SheetJS.github.io
+$ simplehttpserver # or "python -mSimpleHTTPServer" or "serve"
+$ open -a Chromium.app http://localhost:8000/stress.html
+```
+</details>
+
+### 测试环境
+
+<details>
+  <summary>(点击显示)</summary>
+
+- NodeJS `0.8`, `0.10`, `0.12`, `4.x`, `5.x`, `6.x`, `7.x`, `8.x`
+- IE 6/7/8/9/10/11 (IE 6-9 require shims)
+- Chrome 24+ (including Android 4.0+)
+- Safari 6+ (iOS and Desktop)
+- Edge 13+, FF 18+, and Opera 12+
+
+测试使用mocha测试框架。Travis-CI 和 Sauce Labs 链接：
+
+- <https://travis-ci.org/SheetJS/js-xlsx> 用于nodejs内的XLSX模块
+- <https://semaphoreci.com/sheetjs/js-xlsx> 用于nodejs内的XLSX模块
+- <https://travis-ci.org/SheetJS/SheetJS.github.io> 用于 XLS\* 模块
+- <https://saucelabs.com/u/sheetjs> 用于使用Sauce Labs的 XLS\* 模块
+
+Travis-CI测试组合也包括用于多种时区的测试。改变本地的时区，设置TZ环境可用：
+
+```bash
+$ env TZ="Asia/Kolkata" WTF=1 make test_misc
+```
+</details>
+
+### 测试文件
+
+测试文件被封装在[另一个仓库](https://github.com/SheetJS/test_files)。
+
+运行`make init`将会刷新`test_files`子模块并获取子模块的文件。注意这个可能需要`svn`, `git`, `hg`以及其它可能不可用的命令。如果`make init`失败，请从[仓库](https://github.com/SheetJS/test_files/releases)下载测试文件快照的最新版本。
+
+<details>
+  <summary><b>最新快照</b> (点击显示)</summary>
