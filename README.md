@@ -1449,6 +1449,7 @@ DBF文件会基于前几个字节以及第三个和第四个字节进行检测(�
 | PRN    | (默认)                            |
 
 - HTML 标签包括：`html`, `table`, `head`, `meta`, `script`, `style`, `div`
+</details>
 
 <details>
   <summary><b>为什么随机的文本文件合法？</b> (点击显示详情)</summary>
@@ -2327,6 +2328,7 @@ sudo npm install -g mocha voc blanket xlsjs
 对于涉及已经可以解析的新写入功能的测试，恰当的功能测试包括用这个功能写入工作簿，在之后打开并确认功能已经被保存。
 
 对于涉及没有现有读取能力的新写入功能的测试，请添加功能测试到kitchen sink`tests/write.js`。
+</details>
 
 ## 证书
 
