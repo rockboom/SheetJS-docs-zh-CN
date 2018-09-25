@@ -1803,3 +1803,153 @@ S:h:e:e:t:J:S|1:2:3:4:5:6:7|2:3:4:5:6:7:8|
 `txt`输出类型使用tab字符作为字段分隔符。如果`codepage`可用(包含全部的分发但不是核心)，输出将会被编码为`CP1200`并且BOM会被预置。
 
 `XLSX.utils.sheet_to_txt`获取和`sheet_to_csv`一样的参数。
+
+### HTML 输出
+
+作为' writeFile ' HTML类型的替代，`XLSX.utils.sheet_to_html`也会生成HTML输出。这个函数接受一个选项参数：
+
+| Option Name |  Default | Description                                         |
+| :---------- | :------: | :-------------------------------------------------- |
+|`id`         |          | 为`TABLE`元素指定 `id` 特性 |
+|`editable`   |  false   | 如果值为true, 为每一个TD设置 `contenteditable="true"`|
+|`header`     |          | 覆盖 header (默认 `html body`)               |
+|`footer`     |          | 覆盖 footer (默认 `/body /html`)             |
+
+<details>
+  <summary><b>例子</b> (点击显示)</summary>
+
+示例表格：
+
+```js
+> console.log(XLSX.utils.sheet_to_html(ws));
+// ...
+```
+</details>
+
+### JSON
+
+`XLSX.utils.sheet_to_json`生成不同类型的JS对象。这个函数接受一个选项参数：
+
+| Option Name |  Default | Description                                         |
+| :---------- | :------: | :-------------------------------------------------- |
+|`raw`        | `true`   | 使用原生值 (true) 或者格式化字符串 (false)  |
+|`range`      | from WS  | 覆盖 Range (查看下面的table)                    |
+|`header`     |          | 控制输出格式 (查看下面的table)             |
+|`dateNF`     |  FMT 14  | 字符串输出使用指定的日期格式          |
+|`defval`     |          | 使用指定的值替代null或者undefined  |
+|`blankrows`  |    **    | 包含输出的空白行 **                |
+
+- `raw`只影响有格式编码(`.z`)字段或者格式化文本(`.w`)字段的单元格。
+- 如果`header`被指定，第一行就会被当做数据行；如果`header`未指定，第一行是header并且不作为数据。
+- 当header未指定时，转换将通过添加"_"和一个从"1"开始的计数自动消除标题条目的歧义。例如有三列的标题都是`foo`，那么输出字段是`foo1`，`foo_1`，`foo_2`。
+- 当`raw`值为true时返回`null`，`raw`值为false会被跳过。
+- 如果`defval`没有指定，通常`null`和`undefined`会被跳过。如果`defval`有指定值，所有的`null`和`undefined`嗲都将会用`defval`填充。
+- 当`header`为`1`时，默认生成空白行。`blankrows`必须设置为`false`来跳过空白行。
+- 当`header`不为`1`时，默认跳过空白行。`blankrows`必须设置为`true`来生成空白行。
+
+`range`是以下之一：
+
+| `range`          | Description       |
+| :--------------- | :---------------- |
+| (number)         | 使用工作表范围，但将起始行设置为值 |
+| (string)         | 使用指定的范围 (A1类型的有界范围的字符串) |
+| (default)        | 使用工作表范围 (`ws['!ref']`)     |
+
+`header`是以下之一：
+
+| `header`         | Description     |
+| :--------------- | :-------------- |
+| `1`              | 生成数组类型的数组 ("二维数组")   |
+| `"A"`            | 行对象的键是文字的列标题           |
+| array of strings | 在行对象内使用指定的字符串作为键   |
+| (default)        | 读取并消除第一行的歧义作为键   |
+
+如果`header`不为`1`，行对象将会包含不可枚举的属性``__rowNum__`，这个属性代表与条目相对应的工作表的行。
+
+<details>
+  <summary><b>示例</b> (点击显示)</summary>
+示例表：
+
+```js
+> XLSX.utils.sheet_to_json(ws);
+[ { S: 1, h: 2, e: 3, e_1: 4, t: 5, J: 6, S_1: 7 },
+  { S: 2, h: 3, e: 4, e_1: 5, t: 6, J: 7, S_1: 8 } ]
+
+> XLSX.utils.sheet_to_json(ws, {header:"A"});
+[ { A: 'S', B: 'h', C: 'e', D: 'e', E: 't', F: 'J', G: 'S' },
+  { A: '1', B: '2', C: '3', D: '4', E: '5', F: '6', G: '7' },
+  { A: '2', B: '3', C: '4', D: '5', E: '6', F: '7', G: '8' } ]
+
+> XLSX.utils.sheet_to_json(ws, {header:["A","E","I","O","U","6","9"]});
+[ { '6': 'J', '9': 'S', A: 'S', E: 'h', I: 'e', O: 'e', U: 't' },
+  { '6': '6', '9': '7', A: '1', E: '2', I: '3', O: '4', U: '5' },
+  { '6': '7', '9': '8', A: '2', E: '3', I: '4', O: '5', U: '6' } ]
+
+> XLSX.utils.sheet_to_json(ws, {header:1});
+[ [ 'S', 'h', 'e', 'e', 't', 'J', 'S' ],
+  [ '1', '2', '3', '4', '5', '6', '7' ],
+  [ '2', '3', '4', '5', '6', '7', '8' ] ]
+```
+
+展示`row`效果的例子：
+
+```js
+> ws['A2'].w = "3";                          // set A2 formatted string value
+
+> XLSX.utils.sheet_to_json(ws, {header:1, raw:false});
+[ [ 'S', 'h', 'e', 'e', 't', 'J', 'S' ],
+  [ '3', '2', '3', '4', '5', '6', '7' ],     // <-- A2 uses the formatted string
+  [ '2', '3', '4', '5', '6', '7', '8' ] ]
+
+> XLSX.utils.sheet_to_json(ws, {header:1});
+[ [ 'S', 'h', 'e', 'e', 't', 'J', 'S' ],
+  [ 1, 2, 3, 4, 5, 6, 7 ],                   // <-- A2 uses the raw value
+  [ 2, 3, 4, 5, 6, 7, 8 ] ]
+```
+</details>
+
+## 文件格式
+
+虽然库的名称是`xlsx`，不过它支持多种电子表格文件格式：
+
+| Format                                                       | Read  | Write |
+|:-------------------------------------------------------------|:-----:|:-----:|
+| **Excel Worksheet/Workbook Formats**                         |:-----:|:-----:|
+| Excel 2007+ XML Formats (XLSX/XLSM)                          |  :o:  |  :o:  |
+| Excel 2007+ Binary Format (XLSB BIFF12)                      |  :o:  |  :o:  |
+| Excel 2003-2004 XML Format (XML "SpreadsheetML")             |  :o:  |  :o:  |
+| Excel 97-2004 (XLS BIFF8)                                    |  :o:  |  :o:  |
+| Excel 5.0/95 (XLS BIFF5)                                     |  :o:  |  :o:  |
+| Excel 4.0 (XLS/XLW BIFF4)                                    |  :o:  |       |
+| Excel 3.0 (XLS BIFF3)                                        |  :o:  |       |
+| Excel 2.0/2.1 (XLS BIFF2)                                    |  :o:  |  :o:  |
+| **Excel支持的文本格式**                             |:-----:|:-----:|
+| Delimiter-Separated Values(定界分隔符的值 ) (CSV/TXT)                         |  :o:  |  :o:  |
+| Data Interchange Format(数据交换格式 (DIF)                                |  :o:  |  :o:  |
+| Symbolic Link(符号链接) (SYLK/SLK)                                     |  :o:  |  :o:  |
+| Lotus Formatted Text(lotus格式的文本) (PRN)                                   |  :o:  |  :o:  |
+| UTF-16 Unicode Text (TXT)                                    |  :o:  |  :o:  |
+| **其他工作簿/工作表格式**                         |:-----:|:-----:|
+| OpenDocument Spreadsheet(开放文档格式的电子表格) (ODS)                               |  :o:  |  :o:  |
+| Flat XML ODF Spreadsheet (FODS)                              |  :o:  |  :o:  |
+| Uniform Office Format Spreadsheet (标文通 UOS1/UOS2)         |  :o:  |       |
+| dBASE II/III/IV / Visual FoxPro (DBF)                        |  :o:  |  :o:  |
+| Lotus 1-2-3 (WKS/WK1/WK2/WK3/WK4/123)                        |  :o:  |       |
+| Quattro Pro Spreadsheet (WQ1/WQ2/WB1/WB2/WB3/QPW)            |  :o:  |       |
+| **其他常用的电子表格输出格式**                  |:-----:|:-----:|
+| HTML Tables                                                  |  :o:  |  :o:  |
+| Rich Text Format tables(富文本格式表) (RTF)                                |       |  :o:  |
+| Ethercalc Record Format(Ethercalc记录格式) (ETH)                                |  :o:  |  :o:  |
+不会写入给定文件格式不支持的功能。具有范围限制的格式将会被静默截断：
+
+| Format                                    | Last Cell  | Max Cols | Max Rows |
+|:------------------------------------------|:-----------|---------:|---------:|
+| Excel 2007+ XML Formats (XLSX/XLSM)       | XFD1048576 |    16384 |  1048576 |
+| Excel 2007+ Binary Format (XLSB BIFF12)   | XFD1048576 |    16384 |  1048576 |
+| Excel 97-2004 (XLS BIFF8)                 | IV65536    |      256 |    65536 |
+| Excel 5.0/95 (XLS BIFF5)                  | IV16384    |      256 |    16384 |
+| Excel 2.0/2.1 (XLS BIFF2)                 | IV16384    |      256 |    16384 |
+
+Excel 2003 电子表格的范围限制被Excel的版本控制，并且不会写入函数强制执行。
+
+
