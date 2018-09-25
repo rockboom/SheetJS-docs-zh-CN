@@ -2066,4 +2066,74 @@ UOS是一种非常相似的格式，并且它有2个变种，分别对应ODS和F
 
 ### Other Single-Worksheet Formats(其他单一工作表格式)
 
+大多数较老的浏览器仅支持一种工作表：
 
+#### dBASE and Visual FoxPro (DBF)
+
+<details>
+  <summary>(点击显示)</summary>
+
+DBF实际上是一种类型化的表格格式：每一列只能保存一种数据类型，并且每条记录忽略类型信息。解析器生成标题行并且在工作表的第二行开始插入记录。编写器让文件和Visual FoxPro兼容。
+
+多文件的扩展，比如内部示例和表格，目前不支持，会被在web浏览器中读取任意文件的普通能力所限制。读取器理解DBF level 7的扩展，比如DATETIME。
+
+</details>
+
+#### Symbolic Link(符号链接) (SYLK)
+
+<details>
+  <summary>(点击显示)</summary>
+没有真正的文档。通过各种版本的Excel中保存文件来收集所有知识，以推断出字段的含义。注意：
+
+- 简单的公式被存储在RC表单中。
+- 列宽会被四舍五入成完整的字符。
+
+</details>
+
+#### Lotus Formatted Text (PRN)
+
+<details>
+  <summary>(点击显示)</summary>
+没有真正的文档。事实上Excel把PRN视为一种只能输出的文件格式。然而我们能够猜测列宽并且反向还原原始布局。Excel 240个字符宽度的限制不会被强制执行。
+
+</details>
+
+#### Data Interchange Format(数据交换格式) (DIF)
+
+<details>
+  <summary>(点击显示)</summary>
+
+没有统一标准的定义。 Visicalc DIF与Lotus DIF不同，并且两者都与Excel DIF不一样。在不明确的情况下，解析器/编写器遵循Excel中的预期行为。特别地，Excel以不兼容的方式扩展DIF：
+
+- 由于Excel自动将数字字符串转换为数字，数字的字符串常量被转换成公式：`"0.3" -> "=""0.3""`
+- DIF技术上期待数字的单元格保存原始的数字数据，不过Excel允许格式化数字(包括日期)。
+- DIF技术上不支持公式，但是Excel将会转换简单公式。数组公式没有保存。
+</details>
+
+#### HTML
+<details>
+  <summary>(点击显示)</summary>
+Excel HTML工作表包含以样式编码的特殊元数据。例如`mso-number-format`是一个包含数字格式的本地化字符串。尽管元数据的输出是有效的HTML，但是他不接受空的`&`符号。
+
+编写器通过`t`标签添加类型元数据到TD元素中去。解析器检查这些标签，并且覆盖默认的解释。例如文本`<td>12345</td>`将会被解析成数字，不过`<td t="s">12345</td>`将会被解析成文本。
+</details>
+
+#### Rich Text Format(富文本格式) (RTF)
+
+<details>
+  <summary>(点击显示)</summary>
+
+当复制工作表内的单元格或者范围时，Excel RTF工作表会被存储在剪贴板内。支持的编码是单词RTF支持的一个子集。
+
+</details>
+
+#### Ethercalc Record Format (ETH)
+
+<details>
+  <summary>(点击显示)</summary>
+
+[Ethercalc](https://ethercalc.net/)是一种开源的web电子表格，由记录格式驱动，让人联想到包含在MIME多部分消息中的SYLK。
+
+</details>
+
+## 测试
