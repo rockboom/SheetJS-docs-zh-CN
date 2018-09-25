@@ -1952,4 +1952,24 @@ S:h:e:e:t:J:S|1:2:3:4:5:6:7|2:3:4:5:6:7:8|
 
 Excel 2003 电子表格的范围限制被Excel的版本控制，并且不会写入函数强制执行。
 
+### Excel 2007+ XML (XLSX/XLSM)
 
+<details>
+  <summary>(点击显示)</summary>
+
+XlSX和XLSM文件是ZIP容器包含的与开源打包约定(Open Packaging Conventions, OPC)一致的一系列文件。大多数XLSM格式与XLSX相同，被用作文件包含宏命令。
+
+这个格式在ECMA-376以及随后的ISO/IEC 29500都进行了标准化。Excel没有加遵循这个规范，并且还有其他文件讨论Excel如何偏离规范。
+
+</details>
+
+### Excel 2.0-95 (BIFF2/BIFF3/BIFF4/BIFF5)
+
+<details>
+  <summary>(点击显示)</summary>
+
+BIFF 2/3 XLS是二进制记录的单表流。Excel 4介绍了工作簿的原理，除了有单表的`XLS`格式。结构与Lotus 1-2-3文件格式非常相似。BIFF5/8/12用了多种方式扩展格式，不过很大程度上保持了相同的记录格式。
+
+对于这些格式没有官方的规范。Excel 95在这些格式里面可以写入文件，因此记录的长度以及字段都是由所有支持的格式以及比较文件决定。Excel 2016可以生成BIFF5文件，从XLSX或BIFF2开始启用全套文件测试。
+
+</details>
