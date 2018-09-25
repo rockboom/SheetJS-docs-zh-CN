@@ -2222,3 +2222,144 @@ $ env TZ="Asia/Kolkata" WTF=1 make test_misc
 
 <details>
   <summary><b>最新快照</b> (点击显示)</summary>
+最新的测试文件快照：
+<http://github.com/SheetJS/test_files/releases/download/20170409/test_files.zip>
+
+(下载并解压到`test_files`子目录)
+</details>
+
+## 贡献
+
+由于开放规范承诺的不稳定性，确保代码是洁净室非常重要。[贡献记录](CONTRIBUTING.md)
+
+
+<details>
+  <summary><b>文件组织</b> (点击显示)</summary>
+在最高级别，最终脚本是`bits`文件夹中各个文件的串联。运行`make`应该在所有平台上重现最终输出。同样，README被分成了`docbits`文件夹中的位。
+
+文件夹：
+
+| folder       | contents              |
+|:-------------|:----------------------------|
+| `bits`       | 组成最终脚本的原生源文件                |
+| `docbits`    | 组成`README.md`的原生markdown文件                |
+| `bin`        | 服务器端bin脚本 (`xlsx.njs`)                          |
+| `dist`       | 用于Web浏览器和非标准JS环境的dist文件  |
+| `demos`      | 针对ExtendScript和Webpack等平台的演示项目     |
+| `tests`      | 浏览器测试 (运行 `make ctest` 进行构建)    |
+| `types`      | typescript定义和测试      |
+| `misc`       | 各种各样的支持脚本      |
+| `test_files` | 测试文件 (从测试文件仓库拉取)            |
+
+</details>
+
+克隆仓库之后，运行`make help`将会显示一个命令列表。
+
+### OSX/Linux
+
+<details>
+  <summary>(点击显示)</summary>
+
+`xlsx.js`文件由来自于`bits`子目录的文件构建。构建脚本(运行`make`)将会连接各个位来产生脚本。提交一个贡献之前，确保运行将会准确地产生`xlsx.js`文件。测试的最简单方式就是添加下面的脚本：
+
+```bash
+$ git add xlsx.js
+$ make clean
+$ make
+$ git diff xlsx.js
+```
+
+运行`make dist`产生dist文件。每一个版本中的dist文件都会被更新，并且*不应该在版本之间提交*。
+</details>
+
+### Windows
+
+<details>
+  <summary>(点击显示)</summary>
+
+包含`make.cmd`的脚本将会从`bits`目录中构建`xlsx.js`。构建很简单：
+
+```cmd
+> make
+```
+
+准备开发环境：
+
+```cmd
+> make init
+```
+
+windows中可用命令的完整列表显示在`make help`中：
+
+```
+make init -- 安装依赖和全局模块
+make lint -- 运行 eslint linter
+make test -- 运行mocha测试组合
+make misc -- 运行更小的测试组合
+make book -- 重新构建README 和 summary
+make help -- 显示命令信息
+```
+
+与[测试文件](#test-files)中解释的一样，在windows中发布ZIP文件必须要下载和提取。如果Bash在windows内可用，可能会运行 OSX/Linux工作流。下面额步骤准备环境：
+
+```bash
+# Install support programs for the build and test commands
+sudo apt-get install make git subversion mercurial
+
+# Install nodejs and NPM within the WSL
+wget -qO- https://deb.nodesource.com/setup_8.x | sudo bash
+sudo apt-get install nodejs
+
+# Install dev dependencies
+sudo npm install -g mocha voc blanket xlsjs
+```
+
+</details>
+
+### 测试
+
+<details>
+  <summary>(点击显示)</summary>
+`test_misc`(Linux/OSX用`make test_misc`/windows用`make misc`)目标运行定向的功能测试。执行功能测试需要5-10秒而无需对整个测试电池进行测试。新功能应附带相关文件格式和功能的测试。
+
+对于涉及读取端的测试，一个合适的功能测试会包括读取一个存在的文件并且检查工作簿对象的结果。如果涉及参数，文件应该读取不同的值以确保功能如预期所料工作。
+
+对于涉及已经可以解析的新写入功能的测试，恰当的功能测试包括用这个功能写入工作簿，在之后打开并确认功能已经被保存。
+
+对于涉及没有现有读取能力的新写入功能的测试，请添加功能测试到kitchen sink`tests/write.js`。
+
+## 证书
+
+更多细节请查阅相关的证书。原始作者保留未由Apache 2.0许可证明确授予的所有权利。
+
+## 引用
+
+<details>
+  <summary><b>OSP覆盖的规格(OSP-covered Specifications)</b> (点击显示)</summary>
+
+- `MS-CFB`: 复合文件二进制文件格式(Compound File Binary File Format)
+- `MS-CTXLS`: Excel自定义工具栏二进制文件格式(Excel Custom Toolbar Binary File Format)
+- `MS-EXSPXML3`: Excel计算版本2 Web服务XML架构(Excel Calculation Version 2 Web Service XML Schema)
+- `MS-ODATA`: 开源的数据协议(Open Data Protocol) (OData)
+- `MS-ODRAW`: office绘图二进制文件格式(Office Drawing Binary File Format)
+- `MS-ODRAWXML`: Office开源XML结构的Office绘图扩展(Office Drawing Extensions to Office Open XML Structure)
+- `MS-OE376`: Office对ECMA-376标准支持的执行信息(Office Implementation Information for ECMA-376 Standards Support)
+- `MS-OFFCRYPTO`: Office文档密码学结构(Office Document Cryptography Structure)
+- `MS-OI29500`: Office对ISO/IEC 29500标准支持的执行信息(Office Implementation Information for ISO/IEC 29500 Standards Support)
+- `MS-OLEDS`: 对象链接和嵌入数据结构(Object Linking and Embedding (OLE) Data Structures)
+- `MS-OLEPS`: 对象链接和嵌入属性设置数据结构(Object Linking and Embedding (OLE) Property Set Data Structures)
+- `MS-OODF3`: Office对ODF 1.2标准支持的执行信息(Office Implementation Information for ODF 1.2 Standards Support)
+- `MS-OSHARED`: Office常用数据类型和对象结构(Office Common Data Types and Objects Structures)
+- `MS-OVBA`: Office VBA文件结构(Office VBA File Format Structure)
+- `MS-XLDM`: 电子表格数据模型文件格式(Spreadsheet Data Model File Format)
+- `MS-XLS`: Excel二进制文件格式(.xls)结构规范(Excel Binary File Format (.xls) Structure Specification)
+- `MS-XLSB`: Excel (.xlsb)二进制文件格式(Excel (.xlsb) Binary File Format)
+- `MS-XLSX`: Excel (.xlsx) Extensions to the Office Open XML SpreadsheetML File Format
+- `XLS`: Microsoft Office Excel 97-2007 Binary File Format Specification
+- `RTF`: 富文本(Rich Text Format)
+
+</details>
+
+- ISO/IEC 29500:2012(E) "信息技术 - 文档描述和处理语言 - Office开源XML文件格式"
+- Office应用版本 1.2(2011/9/29)开源文档格式
+- 工作表文件格式(来自于Lotus) 1984年12月
