@@ -1973,3 +1973,47 @@ BIFF 2/3 XLS是二进制记录的单表流。Excel 4介绍了工作簿的原理�
 对于这些格式没有官方的规范。Excel 95在这些格式里面可以写入文件，因此记录的长度以及字段都是由所有支持的格式以及比较文件决定。Excel 2016可以生成BIFF5文件，从XLSX或BIFF2开始启用全套文件测试。
 
 </details>
+
+### Excel 97-2004 Binary (BIFF8)
+
+<details>
+  <summary>(点击显示)</summary>
+
+BIFF8仅仅使用混合的文件二进制容器格式，将一些内容放在文件的流内。在它的核心，它将会使用来自BIFF的老版本的二进制记录格式的扩展版本。
+
+`MS-XLS`规范覆盖了文件格式的基础，并且其他的规范扩展了属性(如特性)的规范化。
+
+</details>
+
+### Excel 2003-2004 (SpreadsheetML)
+
+<details>
+  <summary>(点击显示)</summary>
+
+在XLSX之前，SpreadsheetML文件是简单的XML文件。没有官方的并且全面的的规范，虽然MS对于这种格式有发布的文档。因此Excel 2016 生成了电子表格文件，映射功能非常简单。
+
+</details>
+
+### Excel 2007+ Binary (XLSB, BIFF12)
+
+<details>
+  <summary>(点击显示)</summary>
+
+XLSB格式与XLSX并行引入，将BIFF架构与内容分离和XLSX的ZIP容器相结合。XLSX子文件的大部分节点能用一个相应的子文件映射到XLSB记录中去。
+
+`MS-XLSB`规范包含了文件格式的基础，并且其他的规范扩展了属性(如特性)的序列化。
+
+</details>
+
+### 定界分隔符的值 (CSV/TXT)
+
+<details>
+  <summary>(点击显示)</summary>
+
+Excel CSV在许多重要的方法上背离了RFC4180。生成的CSV文件通常应该运行在Excel内，但是他们不能运行RFC4180兼容的读取器中。解析器通常理解Excel CSV。如果值不可用，写入器会为公式主动生成单元格。
+
+Excel TXT 使用tab作为分隔符，编码页1200。
+
+注意：
+
+- 像在Excel中，以`0x49 0x44 ("ID")`开始的文件会被当做是符号链接(Symbolic Link)文件。不像Excel，如果文件没有一个有效的SYLK标题，他将会被主动解释为SYLK文件。为了广泛的兼容性，所有值为`ID`的单元格会自动用双引号包裹。
