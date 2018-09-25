@@ -2017,3 +2017,53 @@ Excel TXT 使用tab作为分隔符，编码页1200。
 注意：
 
 - 像在Excel中，以`0x49 0x44 ("ID")`开始的文件会被当做是符号链接(Symbolic Link)文件。不像Excel，如果文件没有一个有效的SYLK标题，他将会被主动解释为SYLK文件。为了广泛的兼容性，所有值为`ID`的单元格会自动用双引号包裹。
+
+</details>
+
+### 其他工作簿格式
+
+<details>
+  <summary>(点击显示)</summary>
+对其他格式的支持通常远远超出XLS / XLSB / XLSX支持，这在很大程度上是由于缺乏公开可用的文档。文件通常是在各自的应用内产生，并且会与他们的导出文件相比较以确定结构。主要的关注点是数据提出。
+
+</details>
+
+#### Lotus 1-2-3 (WKS/WK1/WK2/WK3/WK4/123)
+
+<details>
+  <summary>(点击显示)</summary>
+
+Lotus格式由与BIFF结构相似的二进制记录组成。Lotus几十年前发布了一份包含原始WK1格式的规范。通过生成文件和与Excel支持进行比较来推断其他功能。
+
+</details>
+
+#### Quattro Pro (WQ1/WQ2/WB1/WB2/WB3/QPW)
+
+<details>
+  <summary>(点击显示)</summary>
+
+Quattro Pro格式使用与BIFF和Lotus一样的二进制记录。一些较新的格式(命名为WB3 和 QPW)使用像BIFF8 XLS一样的CFB附件。
+
+</details>
+
+#### OpenDocument Spreadsheet(开放文档格式的电子表格) (ODS/FODS)
+
+<details>
+  <summary>(点击显示)</summary>
+
+ODS是一种类似于XLSX的XML-in-ZIP格式，而FODS是一种类似于SpreadsheetML的XML格式。两种格式都在OASIS标准中进行了详细的说明，不过像LO/OO工具被添加到了未公开的扩展中。解析器和编写器并没有实现全部的标准，反而重点实现了提取和存储行数据中重要的部分。
+
+</details>
+
+#### Uniform Office Spreadsheet(统一办公电子表格) (UOS1/2)
+
+<details>
+  <summary>(点击显示)</summary>
+
+UOS是一种非常相似的格式，并且它有2个变种，分别对应ODS和FODS。大多数情况下，格式之间的区别是标签和属性的名称。
+
+</details>
+
+### Other Single-Worksheet Formats(其他单一工作表格式)
+
+
